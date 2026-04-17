@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AppTrust — Scam App Detection System</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --blue:#4f9fff;--purple:#a855f7;--pink:#ec4899;--cyan:#06b6d4;
+  --green:#10b981;--amber:#f59e0b;--red:#ef4444;
+  --glass:rgba(255,255,255,0.06);--glass2:rgba(255,255,255,0.10);
+  --border:rgba(255,255,255,0.10);--border2:rgba(255,255,255,0.18);
+  --text:#f0f4ff;--text2:#a0aec8;--text3:#505870;
+}
+body{font-family:'DM Sans',sans-serif;background:#07080f;color:var(--text);min-height:100vh;overflow-x:hidden;}
+.bg-wrap{position:fixed;inset:0;z-index:0;
+  background:radial-gradient(ellipse 80% 60% at 75% 15%,rgba(120,50,220,0.28) 0%,transparent 60%),
+             radial-gradient(ellipse 60% 50% at 15% 85%,rgba(20,80,220,0.22) 0%,transparent 60%),
+             radial-gradient(ellipse 50% 40% at 90% 65%,rgba(220,40,160,0.18) 0%,transparent 55%),
+             radial-gradient(ellipse 30% 30% at 50% 50%,rgba(60,30,120,0.15) 0%,transparent 70%),#07080f;}
+.stars{position:fixed;inset:0;z-index:0;overflow:hidden;}
+.star{position:absolute;border-radius:50%;background:#fff;animation:twinkle var(--d,3s) var(--delay,0s) infinite;}
+@keyframes twinkle{0%,100%{opacity:var(--min,0.1);}50%{opacity:var(--max,0.8);}}
+.page{position:relative;z-index:1;}
+
+/* HEADER */
+header{display:flex;align-items:center;justify-content:space-between;padding:16px 48px;
+  background:rgba(7,8,15,0.75);backdrop-filter:blur(24px);
+  border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;}
+.logo{display:flex;align-items:center;gap:10px;}
+.logo-icon{width:34px;height:34px;background:linear-gradient(135deg,var(--blue),var(--purple));
+  border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;}
+.logo h1{font-family:'Outfit',sans-serif;font-size:18px;font-weight:700;color:#fff;}
+.logo p{font-size:10px;color:var(--text2);}
+nav{display:flex;align-items:center;gap:26px;}
+nav a{font-size:13px;color:var(--text2);text-decoration:none;transition:color .2s;}
+nav a:hover{color:#fff;}
+.nav-dropdown{display:flex;align-items:center;gap:4px;font-size:13px;color:var(--text2);cursor:pointer;}
+.nav-login{background:var(--glass2);border:1px solid var(--border2);padding:7px 18px;
+  border-radius:20px;font-size:13px;color:#fff;cursor:pointer;
+  font-family:'DM Sans',sans-serif;transition:all .2s;}
+.nav-login:hover{background:rgba(255,255,255,0.15);}
+
+/* HERO */
+.hero{text-align:center;padding:70px 20px 44px;}
+.hero h2{font-family:'Outfit',sans-serif;font-size:56px;font-weight:800;
+  letter-spacing:-2px;margin-bottom:12px;
+  background:linear-gradient(135deg,#fff 30%,rgba(180,130,255,0.95) 70%,rgba(255,100,180,0.8));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero-sub{font-size:15px;color:var(--text2);margin-bottom:34px;letter-spacing:.3px;}
+.hero-sub span{color:rgba(255,255,255,0.65);}
+
+/* SEARCH */
+.search-outer{display:flex;justify-content:center;position:relative;}
+.search-wrap{position:relative;display:inline-flex;width:580px;max-width:92vw;}
+.search-input{flex:1;padding:16px 24px;
+  background:rgba(255,255,255,0.07);border:1.5px solid rgba(120,100,255,0.35);
+  border-radius:50px 0 0 50px;color:#fff;font-size:15px;font-family:'DM Sans',sans-serif;
+  outline:none;backdrop-filter:blur(10px);transition:border-color .2s;}
+.search-input:focus{border-color:rgba(120,100,255,0.7);}
+.search-input::placeholder{color:var(--text3);}
+.search-btn{padding:16px 36px;background:linear-gradient(135deg,#e94560,#c73652);
+  border:none;border-radius:0 50px 50px 0;color:#fff;font-size:15px;font-weight:600;
+  font-family:'Outfit',sans-serif;cursor:pointer;transition:all .2s;white-space:nowrap;}
+.search-btn:hover{background:linear-gradient(135deg,#ff5577,#e94560);box-shadow:0 0 24px rgba(233,69,96,0.4);}
+.suggestions{position:absolute;top:calc(100% + 8px);left:0;right:0;
+  background:rgba(12,13,24,0.98);border:1px solid var(--border2);
+  border-radius:16px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,0.6);
+  z-index:300;display:none;backdrop-filter:blur(20px);}
+.sug-item{display:flex;align-items:center;gap:12px;padding:11px 16px;cursor:pointer;
+  transition:background .15s;border-bottom:1px solid var(--border);}
+.sug-item:last-child{border-bottom:none;}
+.sug-item:hover{background:var(--glass2);}
+.sug-img{width:36px;height:36px;border-radius:9px;object-fit:cover;}
+.sug-name{font-size:13px;font-weight:500;color:#fff;}
+.sug-id{font-size:10px;color:var(--text3);}
+.sug-star{font-size:12px;color:var(--amber);margin-left:auto;}
+
+/* CHIPS */
+.chips{margin-top:18px;display:flex;flex-wrap:wrap;justify-content:center;gap:8px;align-items:center;}
+.chips-lbl{font-size:13px;color:var(--text3);}
+.chip{padding:5px 16px;border-radius:20px;background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.14);color:rgba(255,255,255,0.72);
+  font-size:12px;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif;}
+.chip:hover{background:rgba(255,255,255,0.13);color:#fff;border-color:rgba(255,255,255,0.28);}
+
+/* MAIN */
+.main{max-width:1080px;margin:0 auto;padding:0 24px 80px;}
+
+/* LOADING */
+.loading{text-align:center;padding:64px 20px;display:none;}
+.spinner{width:44px;height:44px;border:3px solid rgba(255,255,255,0.08);
+  border-top:3px solid var(--blue);border-radius:50%;
+  animation:spin .8s linear infinite;margin:0 auto 16px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.loading p{color:var(--text2);font-size:14px;}
+
+/* ERROR */
+.err-box{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);
+  border-radius:12px;padding:14px;text-align:center;color:#fca5a5;font-size:14px;
+  display:none;margin-bottom:20px;}
+
+/* RESULT */
+.result-wrap{display:none;animation:fadeUp .5s ease;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
+
+/* RESULT CARD */
+.result-card{
+  background:rgba(255,255,255,0.045);
+  border:1px solid var(--border2);border-radius:24px;padding:28px;
+  backdrop-filter:blur(24px);position:relative;overflow:hidden;}
+.result-card::before{content:'';position:absolute;inset:0;border-radius:24px;
+  background:linear-gradient(135deg,rgba(100,80,255,0.07),rgba(220,50,150,0.04),transparent);pointer-events:none;}
+
+/* APP TOP ROW */
+.app-top{display:flex;align-items:flex-start;gap:16px;margin-bottom:24px;flex-wrap:wrap;}
+.app-icon{width:66px;height:66px;border-radius:16px;object-fit:cover;border:1px solid var(--border);flex-shrink:0;}
+.app-info{flex:1;min-width:160px;}
+.app-info h3{font-family:'Outfit',sans-serif;font-size:22px;font-weight:700;color:#fff;margin-bottom:3px;}
+.app-meta{font-size:13px;color:var(--text2);margin-bottom:3px;}
+.app-stats-row{font-size:13px;color:var(--text2);}
+.app-stats-row .star-txt{color:var(--amber);}
+.play-store-btn{margin-left:auto;display:inline-flex;align-items:center;gap:7px;
+  background:rgba(255,255,255,0.07);border:1px solid var(--border2);
+  padding:8px 16px;border-radius:20px;font-size:12px;color:#fff;
+  cursor:pointer;transition:all .2s;text-decoration:none;white-space:nowrap;
+  font-family:'DM Sans',sans-serif;}
+.play-store-btn:hover{background:rgba(255,255,255,0.14);}
+
+/* GRID */
+.content-grid{display:grid;grid-template-columns:1fr 210px;gap:20px;align-items:start;}
+
+/* STATS */
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;}
+.stat-card{background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:14px;padding:13px 15px;}
+.stat-val{font-family:'Outfit',sans-serif;font-size:21px;font-weight:700;color:#fff;display:flex;align-items:center;gap:5px;margin-bottom:2px;}
+.stat-ico{font-size:15px;}
+.stat-key{font-size:11px;color:var(--text2);}
+
+/* CHART */
+.chart-box{background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:16px;}
+.chart-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.chart-ttl{font-size:13px;font-weight:500;color:var(--text);}
+.chart-tabs{display:flex;gap:4px;}
+.ctab{padding:3px 10px;border-radius:10px;font-size:11px;color:var(--text2);cursor:pointer;border:1px solid transparent;transition:all .15s;}
+.ctab.active{background:rgba(79,159,255,0.15);border-color:rgba(79,159,255,0.4);color:var(--blue);}
+canvas#sChart{width:100%!important;height:85px!important;}
+
+/* PERMISSIONS */
+.sec-box{background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:16px;}
+.sec-hdr{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text2);margin-bottom:10px;display:flex;align-items:center;gap:5px;}
+.perm-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;}
+.perm-item{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.04);border-radius:9px;padding:8px 10px;border:1px solid var(--border);}
+.perm-ico{font-size:14px;width:20px;text-align:center;}
+.perm-nm{font-size:12px;color:var(--text);font-weight:500;}
+.perm-rsk{font-size:10px;}
+.pb{margin-left:auto;font-size:10px;font-weight:600;padding:2px 6px;border-radius:7px;}
+.pb.high{background:rgba(239,68,68,0.15);color:#fca5a5;}
+.pb.med{background:rgba(245,158,11,0.15);color:#fcd34d;}
+.pb.low{background:rgba(16,185,129,0.15);color:#6ee7b7;}
+
+/* REASONS */
+.reason-row{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:var(--text2);margin-bottom:7px;line-height:1.55;}
+.reason-row:last-child{margin-bottom:0;}
+.rdot{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:5px;}
+
+/* REVIEWS */
+.rev-card{background:rgba(255,255,255,0.04);border-radius:10px;padding:11px 13px;margin-bottom:8px;border-left:3px solid var(--border);}
+.rev-card:last-child{margin-bottom:0;}
+.rev-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.rev-stars{color:var(--amber);font-size:12px;letter-spacing:1.5px;}
+.rev-tag{font-size:10px;font-weight:600;padding:2px 8px;border-radius:9px;color:#fff;}
+.rev-txt{font-size:12px;color:var(--text2);line-height:1.6;}
+.bot-flag{font-size:10px;color:#fca5a5;margin-top:4px;}
+
+/* RIGHT COLUMN */
+.right-col{display:flex;flex-direction:column;gap:12px;}
+
+/* GAUGE */
+.gauge-card{background:rgba(255,255,255,0.05);border:1px solid var(--border2);
+  border-radius:20px;padding:20px 16px;text-align:center;backdrop-filter:blur(12px);}
+.gauge-wrap{position:relative;width:160px;margin:0 auto 10px;}
+canvas#gCanvas{width:160px!important;height:160px!important;}
+.gauge-inner{position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;padding-top:14px;}
+.g-score{font-family:'Outfit',sans-serif;font-size:44px;font-weight:800;color:#fff;line-height:1;}
+.g-lbl{font-size:14px;font-weight:600;margin-top:1px;}
+.verdict-pill{display:inline-flex;align-items:center;gap:5px;padding:5px 16px;
+  border-radius:20px;font-size:12px;font-weight:700;letter-spacing:.5px;margin-top:10px;}
+.verdict-pill.safe{background:rgba(16,185,129,0.14);border:1px solid rgba(16,185,129,0.38);color:#6ee7b7;}
+.verdict-pill.suspicious{background:rgba(245,158,11,0.14);border:1px solid rgba(245,158,11,0.38);color:#fcd34d;}
+.verdict-pill.scam{background:rgba(239,68,68,0.14);border:1px solid rgba(239,68,68,0.38);color:#fca5a5;}
+.verdict-txt{font-size:11px;color:var(--text2);margin-top:8px;line-height:1.5;}
+
+/* MINI CARDS */
+.mini-card{background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:14px;padding:13px;}
+.mini-hdr{font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--text2);margin-bottom:8px;display:flex;align-items:center;gap:5px;}
+.fake-top-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:7px;}
+.fake-top-row span{font-size:12px;color:var(--text2);}
+.fake-num{font-family:'Outfit',sans-serif;font-size:20px;font-weight:700;}
+.fbar-bg{background:rgba(255,255,255,0.08);border-radius:4px;height:6px;overflow:hidden;margin-bottom:8px;}
+.fbar-fill{height:100%;border-radius:4px;transition:width 1s ease;}
+.ftag{font-size:10px;color:var(--text2);background:rgba(255,255,255,0.05);padding:3px 7px;border-radius:6px;margin-bottom:4px;}
+.dev-row{display:flex;align-items:center;gap:9px;}
+.dev-ava{width:36px;height:36px;border-radius:9px;background:linear-gradient(135deg,var(--blue),var(--purple));
+  display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.dev-nm{font-size:13px;font-weight:500;color:#fff;}
+.dev-mt{font-size:10px;color:var(--text2);}
+.dev-sc{margin-left:auto;font-family:'Outfit',sans-serif;font-size:18px;font-weight:700;}
+
+/* AI SUMMARY */
+.ai-card{background:rgba(79,159,255,0.07);border:1px solid rgba(79,159,255,0.2);border-radius:14px;padding:13px;}
+.ai-lbl{font-size:10px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;display:flex;align-items:center;gap:5px;}
+.ai-txt{font-size:11px;color:var(--text2);line-height:1.7;}
+
+/* EMPTY */
+.empty-state{text-align:center;padding:64px 20px;color:var(--text2);}
+.empty-ico{font-size:56px;margin-bottom:16px;opacity:.35;}
+.empty-state h3{font-family:'Outfit',sans-serif;font-size:20px;color:var(--text);margin-bottom:8px;}
+.empty-state p{font-size:14px;}
+
+.divider{border:none;border-top:1px solid var(--border);margin:14px 0;}
+
+@media(max-width:800px){
+  header{padding:14px 20px;}
+  .nav-dropdown,.nav-login{display:none;}
+  nav a{display:none;}
+  .hero h2{font-size:34px;}
+  .content-grid{grid-template-columns:1fr;}
+  .right-col{order:-1;display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .gauge-card{grid-column:1/-1;}
+}
+@media(max-width:480px){
+  .stats-row{grid-template-columns:1fr 1fr;}
+  .perm-grid{grid-template-columns:1fr;}
+  .right-col{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<div class="bg-wrap"></div>
+<div class="stars" id="stars"></div>
+
+<div class="page">
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">🛡</div>
+    <div>
+      <h1>AppTrust</h1>
+      <p>Scam App Detection System</p>
+    </div>
+  </div>
+  <nav>
+    <span class="nav-dropdown">Comparisons ▾</span>
+    <a href="#">FAQ</a>
+    <a href="#">About</a>
+    <button class="nav-login">Login ▾</button>
+  </nav>
+</header>
+
+<div class="hero">
+  <h2>Is an app safe?</h2>
+  <p class="hero-sub"><span>Live Play Store Data</span> — <span>NLP Sentiment</span> — <span>Review Analysis</span></p>
+  <div class="search-outer">
+    <div class="search-wrap">
+      <input type="text" class="search-input" id="app-search" placeholder="Search any app..." autocomplete="off"/>
+      <button class="search-btn" onclick="triggerSearch()">Search</button>
+      <div class="suggestions" id="suggestions"></div>
+    </div>
+  </div>
+  <div class="chips">
+    <span class="chips-lbl">Try:</span>
+    <span class="chip" onclick="quickSearch('WhatsApp')">WhatsApp</span>
+    <span class="chip" onclick="quickSearch('Spotify')">Spotify</span>
+    <span class="chip" onclick="quickSearch('Instagram')">Instagram</span>
+    <span class="chip" onclick="quickSearch('TikTok')">TikTok</span>
+    <span class="chip" onclick="quickSearch('loan app')">Loan Apps</span>
+  </div>
+</div>
+
+<div class="main">
+  <div class="loading" id="loading">
+    <div class="spinner"></div>
+    <p>Fetching live data from Google Play Store...</p>
+  </div>
+  <div class="err-box" id="err-box"></div>
+
+  <div class="empty-state" id="empty-state">
+    <div class="empty-ico">🔍</div>
+    <h3>Search any app to analyze</h3>
+    <p>Permissions · Fake Reviews · Developer Trust · Live Sentiment</p>
+  </div>
+
+  <div class="result-wrap" id="result-wrap">
+    <div class="result-card">
+      <div class="app-top" id="app-top"></div>
+      <div class="content-grid">
+        <div class="left-col">
+          <div class="stats-row" id="stats-row"></div>
+          <div class="chart-box">
+            <div class="chart-hdr">
+              <span class="chart-ttl">Sentiment Over Time</span>
+              <div class="chart-tabs">
+                <span class="ctab active">7D</span>
+                <span class="ctab">14D</span>
+                <span class="ctab">50D</span>
+              </div>
+            </div>
+            <canvas id="sChart"></canvas>
+          </div>
+          <div class="sec-box">
+            <div class="sec-hdr">🔐 Permission Risk Analysis</div>
+            <div class="perm-grid" id="perm-grid"></div>
+          </div>
+          <div class="sec-box">
+            <div class="sec-hdr">📋 Analysis Details</div>
+            <div id="reasons-list"></div>
+          </div>
+          <div class="sec-box">
+            <div class="sec-hdr">💬 Top Reviews (Live)</div>
+            <div id="reviews-list"></div>
+          </div>
+        </div>
+        <div class="right-col">
+          <div class="gauge-card">
+            <div class="gauge-wrap">
+              <canvas id="gCanvas" width="160" height="160"></canvas>
+              <div class="gauge-inner">
+                <div class="g-score" id="g-score">-</div>
+                <div class="g-lbl" id="g-lbl"></div>
+              </div>
+            </div>
+            <div id="verdict-pill"></div>
+            <div class="verdict-txt" id="verdict-txt"></div>
+          </div>
+          <div class="mini-card">
+            <div class="mini-hdr">⚠ Fake Reviews</div>
+            <div class="fake-top-row">
+              <span>Suspected Bot/Fake</span>
+              <span class="fake-num" id="fake-num">-</span>
+            </div>
+            <div class="fbar-bg"><div class="fbar-fill" id="fbar" style="width:0"></div></div>
+            <div id="ftags"></div>
+          </div>
+          <div class="mini-card">
+            <div class="mini-hdr">👨‍💻 Developer</div>
+            <div class="dev-row">
+              <div class="dev-ava">🏢</div>
+              <div>
+                <div class="dev-nm" id="dev-nm">-</div>
+                <div class="dev-mt" id="dev-mt">-</div>
+              </div>
+              <div class="dev-sc" id="dev-sc">-</div>
+            </div>
+          </div>
+          <div class="ai-card">
+            <div class="ai-lbl">🤖 AI Summary</div>
+            <div class="ai-txt" id="ai-txt">Search an app to see the analysis summary.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+// Stars
+(function(){
+  const c=document.getElementById('stars');
+  for(let i=0;i<130;i++){
+    const s=document.createElement('div');s.className='star';
+    const sz=Math.random()*2+.4;
+    s.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*100}%;width:${sz}px;height:${sz}px;--d:${2+Math.random()*5}s;--delay:${Math.random()*5}s;--min:${.03+Math.random()*.1};--max:${.3+Math.random()*.7};`;
+    c.appendChild(s);
+  }
+})();
+
+// Gauge
+function drawGauge(score){
+  const cv=document.getElementById('gCanvas'),ctx=cv.getContext('2d');
+  cv.width=160;cv.height=160;
+  const cx=80,cy=86,r=60,sa=Math.PI*.75,ea=Math.PI*2.25,total=ea-sa;
+  // bg arc
+  ctx.beginPath();ctx.arc(cx,cy,r,sa,ea);
+  ctx.strokeStyle='rgba(255,255,255,0.07)';ctx.lineWidth=11;ctx.lineCap='round';ctx.stroke();
+  // colored arc
+  const cols=score>=7?['#10b981','#34d399']:score>=4?['#f59e0b','#fbbf24']:['#ef4444','#f87171'];
+  const g=ctx.createLinearGradient(cx-r,cy,cx+r,cy);
+  g.addColorStop(0,cols[0]);g.addColorStop(1,cols[1]);
+  const prog=(score/10)*total;
+  ctx.beginPath();ctx.arc(cx,cy,r,sa,sa+prog);
+  ctx.strokeStyle=g;ctx.lineWidth=11;ctx.lineCap='round';ctx.stroke();
+  // glow
+  ctx.beginPath();ctx.arc(cx,cy,r,sa,sa+prog);
+  ctx.strokeStyle=cols[0];ctx.lineWidth=18;ctx.lineCap='round';
+  ctx.globalAlpha=.12;ctx.stroke();ctx.globalAlpha=1;
+  // ticks
+  for(let i=0;i<=10;i++){
+    const a=sa+(i/10)*total;
+    const x1=cx+Math.cos(a)*(r-13),y1=cy+Math.sin(a)*(r-13);
+    const x2=cx+Math.cos(a)*(r-7),y2=cy+Math.sin(a)*(r-7);
+    ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);
+    ctx.strokeStyle=`rgba(255,255,255,${i*2<=score*2?.5:.15})`;ctx.lineWidth=1.5;ctx.stroke();
+  }
+}
+
+// Sentiment chart
+function drawChart(polarity){
+  const cv=document.getElementById('sChart');
+  if(!cv)return;
+  const ctx=cv.getContext('2d');
+  cv.width=cv.parentElement.offsetWidth-28||380;cv.height=85;
+  const W=cv.width,H=cv.height;ctx.clearRect(0,0,W,H);
+  const base=polarity||.3;
+  const pts=Array.from({length:7},()=>Math.max(-1,Math.min(1,base+(Math.random()-.5)*.45)));
+  const xS=(W-36)/6;
+  const toY=v=>H/2-(v*(H/2-12));
+  // gridlines
+  [.25,.5,.75].forEach(f=>{
+    ctx.beginPath();ctx.moveTo(18,f*H);ctx.lineTo(W-8,f*H);
+    ctx.strokeStyle='rgba(255,255,255,0.04)';ctx.lineWidth=1;ctx.stroke();
+  });
+  // zero line
+  ctx.setLineDash([4,4]);
+  ctx.beginPath();ctx.moveTo(18,H/2);ctx.lineTo(W-8,H/2);
+  ctx.strokeStyle='rgba(255,255,255,0.09)';ctx.lineWidth=1;ctx.stroke();ctx.setLineDash([]);
+  // fill
+  const grd=ctx.createLinearGradient(0,0,0,H);
+  grd.addColorStop(0,'rgba(79,159,255,0.22)');grd.addColorStop(1,'rgba(79,159,255,0)');
+  ctx.beginPath();
+  pts.forEach((v,i)=>{const x=18+i*xS,y=toY(v);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});
+  ctx.lineTo(18+6*xS,H);ctx.lineTo(18,H);ctx.closePath();
+  ctx.fillStyle=grd;ctx.fill();
+  // line
+  ctx.beginPath();
+  pts.forEach((v,i)=>{const x=18+i*xS,y=toY(v);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});
+  ctx.strokeStyle='rgba(79,159,255,0.9)';ctx.lineWidth=2;ctx.lineJoin='round';ctx.stroke();
+  // dots
+  pts.forEach((v,i)=>{
+    const x=18+i*xS,y=toY(v);
+    ctx.beginPath();ctx.arc(x,y,3,0,Math.PI*2);
+    ctx.fillStyle=v>=0?'#4f9fff':'#ef4444';ctx.fill();
+  });
+  // day labels
+  const days=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  ctx.fillStyle='rgba(255,255,255,0.28)';ctx.font='10px DM Sans';ctx.textAlign='center';
+  pts.forEach((_,i)=>ctx.fillText(days[i],18+i*xS,H-1));
+}
+
+// Search
+let sto;
+function quickSearch(n){document.getElementById('app-search').value=n;triggerSearch();}
+function triggerSearch(){const q=document.getElementById('app-search').value.trim();if(!q)return;fetchSugs(q);}
+
+document.getElementById('app-search').addEventListener('input',function(){
+  const q=this.value.trim();
+  if(q.length<2){document.getElementById('suggestions').style.display='none';return;}
+  clearTimeout(sto);sto=setTimeout(()=>fetchSugs(q),400);
+});
+document.getElementById('app-search').addEventListener('keydown',e=>{if(e.key==='Enter')triggerSearch();});
+
+async function fetchSugs(q){
+  try{
+    const r=await fetch('/search',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query:q})});
+    const d=await r.json();
+    if(!d.success||!d.results.length){document.getElementById('suggestions').style.display='none';return;}
+    const box=document.getElementById('suggestions');
+    box.innerHTML=d.results.map(r=>`
+      <div class="sug-item" onclick="analyzeApp('${r.appId}','${(r.title||'').replace(/'/g,'')}')">
+        <img class="sug-img" src="${r.icon}" onerror="this.src='https://via.placeholder.com/36'"/>
+        <div><div class="sug-name">${r.title}</div><div class="sug-id">${r.appId}</div></div>
+        <div class="sug-star">${r.score?r.score.toFixed(1)+' ★':''}</div>
+      </div>`).join('');
+    box.style.display='block';
+  }catch(e){console.error(e);}
+}
+
+function starsHTML(s){let h='';for(let i=1;i<=5;i++)h+=i<=s?'★':'☆';return h;}
+
+async function analyzeApp(pkgId,title){
+  document.getElementById('suggestions').style.display='none';
+  document.getElementById('app-search').value=title;
+  document.getElementById('loading').style.display='block';
+  document.getElementById('result-wrap').style.display='none';
+  document.getElementById('empty-state').style.display='none';
+  document.getElementById('err-box').style.display='none';
+  window.scrollTo({top:280,behavior:'smooth'});
+  try{
+    const res=await fetch('/analyze',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({package_id:pkgId})});
+    const d=await res.json();
+    document.getElementById('loading').style.display='none';
+    if(!d.success){
+      document.getElementById('err-box').textContent=d.error||'App not found.';
+      document.getElementById('err-box').style.display='block';
+      document.getElementById('empty-state').style.display='block';
+      return;
+    }
+    render(d);
+  }catch(e){
+    document.getElementById('loading').style.display='none';
+    document.getElementById('err-box').textContent='Network error — is the backend running on port 5000?';
+    document.getElementById('err-box').style.display='block';
+    document.getElementById('empty-state').style.display='block';
+  }
+}
+
+function render(d){
+  const lc=d.label==='Safe'?'safe':d.label==='Suspicious'?'suspicious':'scam';
+  const dot=d.label==='Safe'?'#10b981':d.label==='Suspicious'?'#f59e0b':'#ef4444';
+  const fC=d.fake_pct>=50?'#ef4444':d.fake_pct>=25?'#f59e0b':'#10b981';
+  const dC=d.dev_score>=7?'#10b981':d.dev_score>=4?'#f59e0b':'#ef4444';
+  const pol=parseFloat(d.avg_polarity)||0;
+  const pC=pol>=0?'#10b981':'#ef4444';
+
+  // App top
+  document.getElementById('app-top').innerHTML=`
+    <img class="app-icon" src="${d.icon}" onerror="this.src='https://via.placeholder.com/66'"/>
+    <div class="app-info">
+      <h3>${d.title}</h3>
+      <div class="app-meta">${d.developer} &nbsp;·&nbsp; ${d.genre}</div>
+      <div class="app-stats-row"><span class="star-txt">★ ${d.rating}</span> &nbsp;·&nbsp; ${d.reviews_count} ratings &nbsp;·&nbsp; ${d.installs} installs</div>
+    </div>
+    <a class="play-store-btn" href="https://play.google.com/store/apps/details?id=${d.package_id}" target="_blank">▶ View on Play Store</a>`;
+
+  // Stats
+  document.getElementById('stats-row').innerHTML=`
+    <div class="stat-card"><div class="stat-val"><span class="stat-ico">⭐</span>${d.rating}</div><div class="stat-key">Play Rating</div></div>
+    <div class="stat-card"><div class="stat-val" style="color:${pC}"><span class="stat-ico">💬</span>${d.avg_polarity}</div><div class="stat-key">Sentiment</div></div>
+    <div class="stat-card"><div class="stat-val" style="color:${fC}"><span class="stat-ico">⚠</span>${d.fake_pct}%</div><div class="stat-key">Fake Reviews</div></div>`;
+
+  // Gauge
+  drawGauge(d.trust_score);
+  document.getElementById('g-score').textContent=d.trust_score;
+  const gLbl=document.getElementById('g-lbl');
+  gLbl.textContent=d.label;gLbl.style.color=dot;
+  const vp=document.getElementById('verdict-pill');
+  vp.className='verdict-pill '+lc;
+  vp.innerHTML=`${lc==='safe'?'✓':lc==='suspicious'?'⚠':'✕'} ${d.label.toUpperCase()}`;
+  document.getElementById('verdict-txt').textContent=
+    lc==='safe'?`This app is considered safe based on our analysis. ${d.installs} installs with strong sentiment.`:
+    lc==='suspicious'?'Exercise caution. Some patterns detected that warrant attention before installing.':
+    'Multiple scam indicators found. We strongly recommend avoiding this app.';
+
+  // Permissions
+  document.getElementById('perm-grid').innerHTML=(d.permissions||[]).map(p=>`
+    <div class="perm-item">
+      <span class="perm-ico">${p.icon}</span>
+      <div><div class="perm-nm">${p.name}</div>
+      <div class="perm-rsk" style="color:${p.risk==='high'?'#fca5a5':p.risk==='med'?'#fcd34d':'#6ee7b7'};font-size:10px;">${p.label} Risk</div></div>
+      <span class="pb ${p.risk}">${p.label}</span>
+    </div>`).join('')||'<p style="font-size:12px;color:var(--text2)">No permission data</p>';
+
+  // Reasons
+  document.getElementById('reasons-list').innerHTML=(d.reasons||[]).map(r=>`
+    <div class="reason-row"><div class="rdot" style="background:${dot}"></div>${r}</div>`).join('');
+
+  // Reviews
+  document.getElementById('reviews-list').innerHTML=(d.reviews||[]).map(r=>`
+    <div class="rev-card" style="border-left-color:${r.color}">
+      <div class="rev-top"><span class="rev-stars">${starsHTML(r.score)}</span><span class="rev-tag" style="background:${r.color}">${r.sentiment}</span></div>
+      <div class="rev-txt">${r.text}</div>
+      ${r.bot?'<div class="bot-flag">⚠ Suspected fake/bot review</div>':''}
+    </div>`).join('')||'<p style="font-size:12px;color:var(--text2)">No reviews</p>';
+
+  // Fake meter
+  document.getElementById('fake-num').textContent=d.fake_pct+'%';
+  document.getElementById('fake-num').style.color=fC;
+  document.getElementById('fbar').style.width=d.fake_pct+'%';
+  document.getElementById('fbar').style.background=fC;
+  document.getElementById('ftags').innerHTML=(d.fake_signals||[]).map(s=>`<div class="ftag">${s}</div>`).join('');
+
+  // Developer
+  document.getElementById('dev-nm').textContent=d.developer||'Unknown';
+  document.getElementById('dev-mt').textContent=`Updated: ${d.updated||'N/A'} · v${d.version||'N/A'}`;
+  document.getElementById('dev-sc').textContent=d.dev_score+'/10';
+  document.getElementById('dev-sc').style.color=dC;
+
+  // AI Summary
+  document.getElementById('ai-txt').textContent=
+    `This app has ${d.fake_pct>30?'a high':'a low'} percentage of fake reviews (${d.fake_pct}%), but overall user sentiment is ${pol>.2?'positive':pol>-.2?'neutral':'negative'}. The app has a ${d.rating} play rating based on ${d.reviews_count}+ reviews. ${lc==='scam'?'Multiple fraud indicators detected — avoid installing.':lc==='suspicious'?'Some concerns detected — install with caution.':'App appears legitimate and safe to use.'}`;
+
+  document.getElementById('result-wrap').style.display='block';
+  setTimeout(()=>drawChart(pol),120);
+  window.scrollTo({top:document.querySelector('.main').offsetTop-20,behavior:'smooth'});
+}
+
+document.addEventListener('click',e=>{
+  if(!e.target.closest('.search-wrap'))document.getElementById('suggestions').style.display='none';
+});
+</script>
+</body>
+</html>
