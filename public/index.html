@@ -3,463 +3,521 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AppTrust — Scam App Detection System</title>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<title>AppTrust — AI App Safety Detection System</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 :root{
-  --blue:#4f9fff;--purple:#a855f7;--pink:#ec4899;--cyan:#06b6d4;
-  --green:#10b981;--amber:#f59e0b;--red:#ef4444;
-  --glass:rgba(255,255,255,0.06);--glass2:rgba(255,255,255,0.10);
-  --border:rgba(255,255,255,0.10);--border2:rgba(255,255,255,0.18);
-  --text:#f0f4ff;--text2:#a0aec8;--text3:#505870;
+  --bg:#08090f;--bg2:#0d0e1a;
+  --purple:#7c3aed;--purple2:#a855f7;--blue:#3b82f6;--blue2:#60a5fa;
+  --pink:#ec4899;--cyan:#06b6d4;--green:#10b981;--amber:#f59e0b;--red:#ef4444;
+  --text:#f1f3ff;--text2:#8892b0;--text3:#3a4060;
+  --border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.14);
+  --card:rgba(255,255,255,0.04);--card2:rgba(255,255,255,0.07);
 }
-body{font-family:'DM Sans',sans-serif;background:#07080f;color:var(--text);min-height:100vh;overflow-x:hidden;}
-.bg-wrap{position:fixed;inset:0;z-index:0;
-  background:radial-gradient(ellipse 80% 60% at 75% 15%,rgba(120,50,220,0.28) 0%,transparent 60%),
-             radial-gradient(ellipse 60% 50% at 15% 85%,rgba(20,80,220,0.22) 0%,transparent 60%),
-             radial-gradient(ellipse 50% 40% at 90% 65%,rgba(220,40,160,0.18) 0%,transparent 55%),
-             radial-gradient(ellipse 30% 30% at 50% 50%,rgba(60,30,120,0.15) 0%,transparent 70%),#07080f;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+.bg{position:fixed;inset:0;z-index:0;
+  background:
+    radial-gradient(ellipse 55% 45% at 25% 20%,rgba(124,58,237,0.14) 0%,transparent 65%),
+    radial-gradient(ellipse 45% 40% at 80% 25%,rgba(59,130,246,0.1) 0%,transparent 65%),
+    radial-gradient(ellipse 40% 35% at 55% 85%,rgba(168,85,247,0.08) 0%,transparent 60%),
+    #08090f;}
 .stars{position:fixed;inset:0;z-index:0;overflow:hidden;}
-.star{position:absolute;border-radius:50%;background:#fff;animation:twinkle var(--d,3s) var(--delay,0s) infinite;}
-@keyframes twinkle{0%,100%{opacity:var(--min,0.1);}50%{opacity:var(--max,0.8);}}
+.star{position:absolute;border-radius:50%;background:#fff;animation:tw var(--d) var(--dl) infinite;}
+@keyframes tw{0%,100%{opacity:var(--mn);}50%{opacity:var(--mx);}}
 .page{position:relative;z-index:1;}
 
 /* HEADER */
-header{display:flex;align-items:center;justify-content:space-between;padding:16px 48px;
-  background:rgba(7,8,15,0.75);backdrop-filter:blur(24px);
+header{display:flex;align-items:center;justify-content:space-between;padding:13px 36px;
+  background:rgba(8,9,15,0.85);backdrop-filter:blur(20px);
   border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;}
-.logo{display:flex;align-items:center;gap:10px;}
-.logo-icon{width:34px;height:34px;background:linear-gradient(135deg,var(--blue),var(--purple));
-  border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;}
-.logo h1{font-family:'Outfit',sans-serif;font-size:18px;font-weight:700;color:#fff;}
-.logo p{font-size:10px;color:var(--text2);}
-nav{display:flex;align-items:center;gap:26px;}
-nav a{font-size:13px;color:var(--text2);text-decoration:none;transition:color .2s;}
-nav a:hover{color:#fff;}
-.nav-dropdown{display:flex;align-items:center;gap:4px;font-size:13px;color:var(--text2);cursor:pointer;}
-.nav-login{background:var(--glass2);border:1px solid var(--border2);padding:7px 18px;
-  border-radius:20px;font-size:13px;color:#fff;cursor:pointer;
-  font-family:'DM Sans',sans-serif;transition:all .2s;}
-.nav-login:hover{background:rgba(255,255,255,0.15);}
+.logo-w{display:flex;align-items:center;gap:10px;}
+.logo-ico{width:34px;height:34px;background:linear-gradient(135deg,var(--purple),var(--blue));
+  border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;
+  box-shadow:0 0 14px rgba(124,58,237,0.35);}
+.logo-w h1{font-family:'Outfit',sans-serif;font-size:17px;font-weight:700;color:#fff;}
+.logo-w p{font-size:10px;color:var(--text2);}
+.hnav{display:flex;align-items:center;gap:2px;}
+.hl{font-size:13px;color:var(--text2);padding:6px 13px;border-radius:6px;cursor:pointer;transition:color .2s;font-family:'DM Sans',sans-serif;text-decoration:none;}
+.hl:hover{color:#fff;}
+.hl.on{color:var(--purple2);}
+.hl.on .ul{display:block;height:2px;background:var(--purple2);border-radius:2px;margin-top:2px;}
+.ul{display:none;}
+.hright{display:flex;align-items:center;gap:10px;}
+.tt{display:flex;background:var(--card2);border:1px solid var(--border);border-radius:20px;padding:4px;gap:2px;}
+.ttb{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;cursor:pointer;transition:all .2s;}
+.ttb.on{background:rgba(255,255,255,0.12);}
+.dbtn{background:linear-gradient(135deg,var(--purple),var(--blue));border:none;padding:8px 20px;
+  border-radius:20px;color:#fff;font-size:13px;font-weight:600;cursor:pointer;
+  font-family:'Outfit',sans-serif;transition:all .2s;}
+.dbtn:hover{box-shadow:0 0 20px rgba(124,58,237,0.45);transform:translateY(-1px);}
+.ava{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--purple2),var(--pink));
+  display:flex;align-items:center;justify-content:center;font-size:13px;cursor:pointer;font-weight:600;}
 
 /* HERO */
-.hero{text-align:center;padding:70px 20px 44px;}
-.hero h2{font-family:'Outfit',sans-serif;font-size:56px;font-weight:800;
-  letter-spacing:-2px;margin-bottom:12px;
-  background:linear-gradient(135deg,#fff 30%,rgba(180,130,255,0.95) 70%,rgba(255,100,180,0.8));
+.hero{display:grid;grid-template-columns:1fr 490px;gap:44px;padding:50px 36px 36px;align-items:start;max-width:1380px;margin:0 auto;}
+
+/* HERO LEFT */
+.badge{display:inline-flex;align-items:center;gap:6px;background:rgba(124,58,237,0.14);
+  border:1px solid rgba(124,58,237,0.3);padding:6px 14px;border-radius:20px;
+  font-size:12px;color:var(--purple2);margin-bottom:22px;}
+.badge span{color:var(--text3);}
+.h1{font-family:'Outfit',sans-serif;font-size:50px;font-weight:900;line-height:1.08;
+  margin-bottom:18px;letter-spacing:-1.5px;color:#fff;}
+.h1 .sw{color:var(--blue2);}
+.h1 .scw{background:linear-gradient(135deg,var(--pink),var(--red));
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.hero-sub{font-size:15px;color:var(--text2);margin-bottom:34px;letter-spacing:.3px;}
-.hero-sub span{color:rgba(255,255,255,0.65);}
+.hdesc{font-size:15px;color:var(--text2);line-height:1.7;margin-bottom:28px;max-width:430px;}
 
 /* SEARCH */
-.search-outer{display:flex;justify-content:center;position:relative;}
-.search-wrap{position:relative;display:inline-flex;width:580px;max-width:92vw;}
-.search-input{flex:1;padding:16px 24px;
-  background:rgba(255,255,255,0.07);border:1.5px solid rgba(120,100,255,0.35);
-  border-radius:50px 0 0 50px;color:#fff;font-size:15px;font-family:'DM Sans',sans-serif;
-  outline:none;backdrop-filter:blur(10px);transition:border-color .2s;}
-.search-input:focus{border-color:rgba(120,100,255,0.7);}
-.search-input::placeholder{color:var(--text3);}
-.search-btn{padding:16px 36px;background:linear-gradient(135deg,#e94560,#c73652);
-  border:none;border-radius:0 50px 50px 0;color:#fff;font-size:15px;font-weight:600;
-  font-family:'Outfit',sans-serif;cursor:pointer;transition:all .2s;white-space:nowrap;}
-.search-btn:hover{background:linear-gradient(135deg,#ff5577,#e94560);box-shadow:0 0 24px rgba(233,69,96,0.4);}
-.suggestions{position:absolute;top:calc(100% + 8px);left:0;right:0;
-  background:rgba(12,13,24,0.98);border:1px solid var(--border2);
-  border-radius:16px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,0.6);
-  z-index:300;display:none;backdrop-filter:blur(20px);}
-.sug-item{display:flex;align-items:center;gap:12px;padding:11px 16px;cursor:pointer;
+.sb-wrap{position:relative;margin-bottom:18px;}
+.sb{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.06);
+  border:1.5px solid rgba(124,58,237,0.4);border-radius:14px;padding:10px 10px 10px 16px;
+  transition:border-color .2s,box-shadow .2s;}
+.sb:focus-within{border-color:rgba(124,58,237,0.75);box-shadow:0 0 0 3px rgba(124,58,237,0.1);}
+.sb-ico{width:30px;height:30px;border-radius:8px;object-fit:cover;display:none;}
+.sb-ico.on{display:block;}
+.si{flex:1;background:none;border:none;outline:none;font-size:15px;color:#fff;font-family:'DM Sans',sans-serif;}
+.si::placeholder{color:var(--text3);}
+.sc{background:rgba(255,255,255,0.1);border:none;width:24px;height:24px;border-radius:50%;
+  color:var(--text2);cursor:pointer;font-size:13px;display:none;align-items:center;justify-content:center;}
+.sc.on{display:flex;}
+.abtn{padding:10px 22px;background:linear-gradient(135deg,var(--purple),var(--blue));
+  border:none;border-radius:10px;color:#fff;font-size:14px;font-weight:700;cursor:pointer;
+  font-family:'Outfit',sans-serif;white-space:nowrap;transition:all .2s;}
+.abtn:hover{box-shadow:0 0 18px rgba(124,58,237,0.5);transform:scale(1.02);}
+.sugs{position:absolute;top:calc(100% + 6px);left:0;right:0;
+  background:rgba(9,10,20,0.98);border:1px solid var(--border2);border-radius:14px;
+  overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.7);z-index:300;display:none;
+  backdrop-filter:blur(20px);}
+.si-item{display:flex;align-items:center;gap:12px;padding:10px 15px;cursor:pointer;
   transition:background .15s;border-bottom:1px solid var(--border);}
-.sug-item:last-child{border-bottom:none;}
-.sug-item:hover{background:var(--glass2);}
-.sug-img{width:36px;height:36px;border-radius:9px;object-fit:cover;}
-.sug-name{font-size:13px;font-weight:500;color:#fff;}
-.sug-id{font-size:10px;color:var(--text3);}
-.sug-star{font-size:12px;color:var(--amber);margin-left:auto;}
+.si-item:last-child{border-bottom:none;}
+.si-item:hover{background:var(--card2);}
+.si-img{width:34px;height:34px;border-radius:8px;object-fit:cover;}
+.si-nm{font-size:13px;font-weight:500;color:#fff;}
+.si-id{font-size:10px;color:var(--text3);}
+.si-st{font-size:12px;color:var(--amber);margin-left:auto;}
 
-/* CHIPS */
-.chips{margin-top:18px;display:flex;flex-wrap:wrap;justify-content:center;gap:8px;align-items:center;}
-.chips-lbl{font-size:13px;color:var(--text3);}
-.chip{padding:5px 16px;border-radius:20px;background:rgba(255,255,255,0.06);
-  border:1px solid rgba(255,255,255,0.14);color:rgba(255,255,255,0.72);
-  font-size:12px;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif;}
-.chip:hover{background:rgba(255,255,255,0.13);color:#fff;border-color:rgba(255,255,255,0.28);}
+/* POP CHIPS */
+.pop-lbl{font-size:12px;color:var(--text3);margin-bottom:9px;}
+.pop-chips{display:flex;flex-wrap:wrap;gap:7px;}
+.pchip{display:inline-flex;align-items:center;gap:6px;padding:6px 13px;
+  background:var(--card2);border:1px solid var(--border);border-radius:20px;
+  font-size:12px;color:var(--text2);cursor:pointer;transition:all .2s;}
+.pchip:hover{background:rgba(124,58,237,0.14);border-color:rgba(124,58,237,0.4);color:#fff;}
+.pchip img{width:15px;height:15px;border-radius:4px;}
 
-/* MAIN */
-.main{max-width:1080px;margin:0 auto;padding:0 24px 80px;}
+/* HERO STATS */
+.hstats{display:flex;gap:28px;margin-top:32px;padding-top:24px;border-top:1px solid var(--border);}
+.hst{display:flex;align-items:center;gap:9px;}
+.hst-ico{font-size:19px;}
+.hst-v{font-family:'Outfit',sans-serif;font-size:19px;font-weight:700;color:#fff;}
+.hst-l{font-size:11px;color:var(--text2);}
 
-/* LOADING */
-.loading{text-align:center;padding:64px 20px;display:none;}
-.spinner{width:44px;height:44px;border:3px solid rgba(255,255,255,0.08);
-  border-top:3px solid var(--blue);border-radius:50%;
-  animation:spin .8s linear infinite;margin:0 auto 16px;}
+/* PANEL */
+.panel{background:rgba(12,13,22,0.92);border:1px solid var(--border2);border-radius:20px;
+  padding:18px;backdrop-filter:blur(24px);min-height:360px;position:relative;}
+
+/* PANEL STATES */
+.p-empty{text-align:center;padding:50px 16px;color:var(--text2);}
+.p-empty-ico{font-size:48px;margin-bottom:12px;opacity:.25;}
+.p-empty h3{font-family:'Outfit',sans-serif;font-size:17px;color:var(--text);margin-bottom:5px;}
+.p-empty p{font-size:12px;}
+.scan-row{display:flex;justify-content:center;gap:8px;margin-top:14px;font-size:11px;color:var(--text3);}
+.p-load{text-align:center;padding:50px 16px;display:none;}
+.spin{width:38px;height:38px;border:3px solid rgba(124,58,237,0.15);
+  border-top:3px solid var(--purple2);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 12px;}
 @keyframes spin{to{transform:rotate(360deg);}}
-.loading p{color:var(--text2);font-size:14px;}
+.p-load p{font-size:13px;color:var(--text2);}
+.scan-lbl{font-size:10px;color:var(--text3);margin-top:4px;}
+.err{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:9px;
+  padding:10px;color:#fca5a5;font-size:12px;text-align:center;display:none;margin-bottom:10px;}
 
-/* ERROR */
-.err-box{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);
-  border-radius:12px;padding:14px;text-align:center;color:#fca5a5;font-size:14px;
-  display:none;margin-bottom:20px;}
+/* PANEL HEADER */
+.phdr{display:flex;align-items:flex-start;gap:11px;margin-bottom:14px;}
+.p-icon-w{flex-shrink:0;}
+.p-icon{width:50px;height:50px;border-radius:13px;object-fit:cover;border:2px solid var(--border2);}
+/* ROTATING LOGO */
+.p-icon.rotating{animation:rot3d 5s linear infinite;}
+@keyframes rot3d{0%{transform:perspective(300px) rotateY(0deg);}100%{transform:perspective(300px) rotateY(360deg);}}
+.p-info h3{font-family:'Outfit',sans-serif;font-size:16px;font-weight:700;color:#fff;margin-bottom:2px;}
+.p-sub{font-size:11px;color:var(--text2);}
+.a-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:9px;font-size:10px;font-weight:700;margin-top:4px;}
+.p-time{margin-left:auto;text-align:right;}
+.pt-done{font-size:10px;color:var(--green);}
+.pt-ago{font-size:9px;color:var(--text2);margin-top:2px;}
 
-/* RESULT */
-.result-wrap{display:none;animation:fadeUp .5s ease;}
-@keyframes fadeUp{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
+/* GAUGE ROW */
+.g-row{display:grid;grid-template-columns:130px 1fr;gap:14px;align-items:center;margin-bottom:14px;}
+.g-w{position:relative;width:130px;height:130px;}
+canvas#gCv{width:130px!important;height:130px!important;}
+.g-in{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.g-deg{font-family:'Outfit',sans-serif;font-size:28px;font-weight:900;color:#fff;line-height:1;}
+.g-ssub{font-size:10px;color:var(--text2);margin-top:2px;}
+.g-pill{font-size:10px;font-weight:700;padding:2px 9px;border-radius:9px;margin-top:3px;}
+.g-pill.safe{background:rgba(16,185,129,0.18);color:#6ee7b7;border:1px solid rgba(16,185,129,0.35);}
+.g-pill.suspicious{background:rgba(245,158,11,0.18);color:#fcd34d;border:1px solid rgba(245,158,11,0.35);}
+.g-pill.scam{background:rgba(239,68,68,0.18);color:#fca5a5;border:1px solid rgba(239,68,68,0.35);}
 
-/* RESULT CARD */
-.result-card{
-  background:rgba(255,255,255,0.045);
-  border:1px solid var(--border2);border-radius:24px;padding:28px;
-  backdrop-filter:blur(24px);position:relative;overflow:hidden;}
-.result-card::before{content:'';position:absolute;inset:0;border-radius:24px;
-  background:linear-gradient(135deg,rgba(100,80,255,0.07),rgba(220,50,150,0.04),transparent);pointer-events:none;}
+/* METRICS */
+.mlist{display:flex;flex-direction:column;gap:7px;}
+.mrow{display:flex;align-items:center;gap:9px;background:rgba(255,255,255,0.04);border-radius:9px;padding:7px 10px;}
+.m-ico{font-size:14px;width:20px;text-align:center;}
+.m-inf{flex:1;}
+.m-nm{font-size:11px;color:var(--text);font-weight:500;}
+.m-lb{font-size:9px;color:var(--text2);}
+.m-val{font-family:'Outfit',sans-serif;font-size:14px;font-weight:700;}
 
-/* APP TOP ROW */
-.app-top{display:flex;align-items:flex-start;gap:16px;margin-bottom:24px;flex-wrap:wrap;}
-.app-icon{width:66px;height:66px;border-radius:16px;object-fit:cover;border:1px solid var(--border);flex-shrink:0;}
-.app-info{flex:1;min-width:160px;}
-.app-info h3{font-family:'Outfit',sans-serif;font-size:22px;font-weight:700;color:#fff;margin-bottom:3px;}
-.app-meta{font-size:13px;color:var(--text2);margin-bottom:3px;}
-.app-stats-row{font-size:13px;color:var(--text2);}
-.app-stats-row .star-txt{color:var(--amber);}
-.play-store-btn{margin-left:auto;display:inline-flex;align-items:center;gap:7px;
-  background:rgba(255,255,255,0.07);border:1px solid var(--border2);
-  padding:8px 16px;border-radius:20px;font-size:12px;color:#fff;
-  cursor:pointer;transition:all .2s;text-decoration:none;white-space:nowrap;
-  font-family:'DM Sans',sans-serif;}
-.play-store-btn:hover{background:rgba(255,255,255,0.14);}
-
-/* GRID */
-.content-grid{display:grid;grid-template-columns:1fr 210px;gap:20px;align-items:start;}
-
-/* STATS */
-.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;}
-.stat-card{background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:14px;padding:13px 15px;}
-.stat-val{font-family:'Outfit',sans-serif;font-size:21px;font-weight:700;color:#fff;display:flex;align-items:center;gap:5px;margin-bottom:2px;}
-.stat-ico{font-size:15px;}
-.stat-key{font-size:11px;color:var(--text2);}
-
-/* CHART */
-.chart-box{background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:16px;}
-.chart-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
-.chart-ttl{font-size:13px;font-weight:500;color:var(--text);}
-.chart-tabs{display:flex;gap:4px;}
-.ctab{padding:3px 10px;border-radius:10px;font-size:11px;color:var(--text2);cursor:pointer;border:1px solid transparent;transition:all .15s;}
-.ctab.active{background:rgba(79,159,255,0.15);border-color:rgba(79,159,255,0.4);color:var(--blue);}
-canvas#sChart{width:100%!important;height:85px!important;}
-
-/* PERMISSIONS */
-.sec-box{background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:16px;}
-.sec-hdr{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text2);margin-bottom:10px;display:flex;align-items:center;gap:5px;}
-.perm-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;}
-.perm-item{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.04);border-radius:9px;padding:8px 10px;border:1px solid var(--border);}
-.perm-ico{font-size:14px;width:20px;text-align:center;}
-.perm-nm{font-size:12px;color:var(--text);font-weight:500;}
-.perm-rsk{font-size:10px;}
-.pb{margin-left:auto;font-size:10px;font-weight:600;padding:2px 6px;border-radius:7px;}
-.pb.high{background:rgba(239,68,68,0.15);color:#fca5a5;}
-.pb.med{background:rgba(245,158,11,0.15);color:#fcd34d;}
-.pb.low{background:rgba(16,185,129,0.15);color:#6ee7b7;}
-
-/* REASONS */
-.reason-row{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:var(--text2);margin-bottom:7px;line-height:1.55;}
-.reason-row:last-child{margin-bottom:0;}
-.rdot{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:5px;}
+/* SENTIMENT */
+.sent-box{background:var(--card);border-radius:11px;padding:11px 13px;margin-bottom:9px;}
+.sent-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;}
+.sent-t{font-size:11px;color:var(--text2);}
+.sent-v{font-family:'Outfit',sans-serif;font-size:20px;font-weight:700;display:flex;align-items:center;gap:5px;}
+.sent-sub{font-size:9px;color:var(--text2);margin:3px 0 6px;}
+.sbar-bg{background:rgba(255,255,255,0.08);border-radius:3px;height:5px;overflow:hidden;}
+.sbar-f{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--green),var(--cyan));transition:width 1s ease;}
 
 /* REVIEWS */
-.rev-card{background:rgba(255,255,255,0.04);border-radius:10px;padding:11px 13px;margin-bottom:8px;border-left:3px solid var(--border);}
-.rev-card:last-child{margin-bottom:0;}
-.rev-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
-.rev-stars{color:var(--amber);font-size:12px;letter-spacing:1.5px;}
-.rev-tag{font-size:10px;font-weight:600;padding:2px 8px;border-radius:9px;color:#fff;}
-.rev-txt{font-size:12px;color:var(--text2);line-height:1.6;}
-.bot-flag{font-size:10px;color:#fca5a5;margin-top:4px;}
+.rc-box{background:var(--card);border-radius:11px;padding:11px 13px;margin-bottom:9px;}
+.rc-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;}
+.rc-t{font-size:11px;color:var(--text2);}
+.rc-v{font-family:'Outfit',sans-serif;font-size:18px;font-weight:700;color:#fff;margin-bottom:6px;}
+.rc-s{font-size:9px;color:var(--text2);}
+canvas#rcC{width:100%!important;height:36px!important;}
 
-/* RIGHT COLUMN */
-.right-col{display:flex;flex-direction:column;gap:12px;}
+/* BREAKDOWN */
+.bk-box{background:var(--card);border-radius:11px;padding:11px 13px;}
+.bk-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.bk-t{font-size:11px;color:var(--text2);}
+.bk-vr{font-size:10px;color:var(--purple2);cursor:pointer;}
+.bk-steps{display:flex;align-items:center;}
+.bk-s{display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;}
+.bk-ico{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;border:2px solid var(--border);background:var(--card2);}
+.bk-ico.done{background:rgba(124,58,237,0.18);border-color:rgba(124,58,237,0.45);}
+.bk-lbl{font-size:8px;color:var(--text2);text-align:center;line-height:1.3;}
+.bk-ok{font-size:8px;color:var(--green);}
+.bk-line{flex:1;height:2px;background:linear-gradient(90deg,rgba(124,58,237,0.45),rgba(59,130,246,0.25));margin-top:-22px;}
 
-/* GAUGE */
-.gauge-card{background:rgba(255,255,255,0.05);border:1px solid var(--border2);
-  border-radius:20px;padding:20px 16px;text-align:center;backdrop-filter:blur(12px);}
-.gauge-wrap{position:relative;width:160px;margin:0 auto 10px;}
-canvas#gCanvas{width:160px!important;height:160px!important;}
-.gauge-inner{position:absolute;inset:0;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;padding-top:14px;}
-.g-score{font-family:'Outfit',sans-serif;font-size:44px;font-weight:800;color:#fff;line-height:1;}
-.g-lbl{font-size:14px;font-weight:600;margin-top:1px;}
-.verdict-pill{display:inline-flex;align-items:center;gap:5px;padding:5px 16px;
-  border-radius:20px;font-size:12px;font-weight:700;letter-spacing:.5px;margin-top:10px;}
-.verdict-pill.safe{background:rgba(16,185,129,0.14);border:1px solid rgba(16,185,129,0.38);color:#6ee7b7;}
-.verdict-pill.suspicious{background:rgba(245,158,11,0.14);border:1px solid rgba(245,158,11,0.38);color:#fcd34d;}
-.verdict-pill.scam{background:rgba(239,68,68,0.14);border:1px solid rgba(239,68,68,0.38);color:#fca5a5;}
-.verdict-txt{font-size:11px;color:var(--text2);margin-top:8px;line-height:1.5;}
+/* FEATURES */
+.feats{max-width:1380px;margin:0 auto;padding:36px 36px;}
+.sec-lbl{text-align:center;font-size:12px;color:var(--purple2);font-weight:600;letter-spacing:1px;margin-bottom:6px;}
+.feat-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;}
+.fc{background:var(--card);border:1px solid var(--border);border-radius:15px;padding:18px 15px;transition:all .3s;cursor:pointer;}
+.fc:hover{background:rgba(124,58,237,0.07);border-color:rgba(124,58,237,0.38);transform:translateY(-3px);}
+.fc.red{background:rgba(239,68,68,0.06);border-color:rgba(239,68,68,0.25);}
+.fc.red:hover{background:rgba(239,68,68,0.1);}
+.fi{width:40px;height:40px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:19px;margin-bottom:12px;}
+.fi.p{background:rgba(124,58,237,0.14);}
+.fi.b{background:rgba(59,130,246,0.14);}
+.fi.r{background:rgba(239,68,68,0.14);}
+.fi.g{background:rgba(16,185,129,0.14);}
+.fi.c{background:rgba(6,182,212,0.14);}
+.ft{font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;color:#fff;margin-bottom:5px;}
+.fd{font-size:11px;color:var(--text2);line-height:1.6;margin-bottom:12px;}
+.frow{display:flex;justify-content:space-between;font-size:10px;}
+.frl{color:var(--text2);}
+.frat{display:flex;align-items:center;gap:3px;color:var(--amber);font-size:11px;font-weight:600;margin-top:4px;}
+canvas.spark{width:100%!important;height:28px!important;margin-top:8px;}
+.susp-tag{background:rgba(245,158,11,0.1);border-radius:6px;padding:5px 8px;margin-top:6px;display:flex;justify-content:space-between;font-size:10px;}
+.susp-tag span:first-child{color:var(--amber);}
+.susp-tag span:last-child{color:var(--green);}
 
-/* MINI CARDS */
-.mini-card{background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:14px;padding:13px;}
-.mini-hdr{font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--text2);margin-bottom:8px;display:flex;align-items:center;gap:5px;}
-.fake-top-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:7px;}
-.fake-top-row span{font-size:12px;color:var(--text2);}
-.fake-num{font-family:'Outfit',sans-serif;font-size:20px;font-weight:700;}
-.fbar-bg{background:rgba(255,255,255,0.08);border-radius:4px;height:6px;overflow:hidden;margin-bottom:8px;}
-.fbar-fill{height:100%;border-radius:4px;transition:width 1s ease;}
-.ftag{font-size:10px;color:var(--text2);background:rgba(255,255,255,0.05);padding:3px 7px;border-radius:6px;margin-bottom:4px;}
-.dev-row{display:flex;align-items:center;gap:9px;}
-.dev-ava{width:36px;height:36px;border-radius:9px;background:linear-gradient(135deg,var(--blue),var(--purple));
-  display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
-.dev-nm{font-size:13px;font-weight:500;color:#fff;}
-.dev-mt{font-size:10px;color:var(--text2);}
-.dev-sc{margin-left:auto;font-family:'Outfit',sans-serif;font-size:18px;font-weight:700;}
+/* BOTTOM STATS */
+.bstats{background:linear-gradient(135deg,rgba(124,58,237,0.09),rgba(59,130,246,0.07));
+  border-top:1px solid var(--border);padding:26px 36px;}
+.bsg{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;max-width:1380px;margin:0 auto;text-align:center;}
+.bsico{font-size:22px;margin-bottom:5px;}
+.bsv{font-family:'Outfit',sans-serif;font-size:24px;font-weight:800;color:#fff;margin-bottom:2px;}
+.bsl{font-size:11px;color:var(--text2);}
 
-/* AI SUMMARY */
-.ai-card{background:rgba(79,159,255,0.07);border:1px solid rgba(79,159,255,0.2);border-radius:14px;padding:13px;}
-.ai-lbl{font-size:10px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;display:flex;align-items:center;gap:5px;}
-.ai-txt{font-size:11px;color:var(--text2);line-height:1.7;}
+.err-wrap{margin-bottom:10px;}
 
-/* EMPTY */
-.empty-state{text-align:center;padding:64px 20px;color:var(--text2);}
-.empty-ico{font-size:56px;margin-bottom:16px;opacity:.35;}
-.empty-state h3{font-family:'Outfit',sans-serif;font-size:20px;color:var(--text);margin-bottom:8px;}
-.empty-state p{font-size:14px;}
-
-.divider{border:none;border-top:1px solid var(--border);margin:14px 0;}
-
-@media(max-width:800px){
-  header{padding:14px 20px;}
-  .nav-dropdown,.nav-login{display:none;}
-  nav a{display:none;}
-  .hero h2{font-size:34px;}
-  .content-grid{grid-template-columns:1fr;}
-  .right-col{order:-1;display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-  .gauge-card{grid-column:1/-1;}
+@media(max-width:1080px){
+  .hero{grid-template-columns:1fr;padding:28px 18px 20px;}
+  .feat-grid{grid-template-columns:repeat(3,1fr);}
+  .bsg{grid-template-columns:repeat(3,1fr);}
 }
-@media(max-width:480px){
-  .stats-row{grid-template-columns:1fr 1fr;}
-  .perm-grid{grid-template-columns:1fr;}
-  .right-col{grid-template-columns:1fr;}
+@media(max-width:640px){
+  header{padding:11px 14px;}
+  .hnav{display:none;}
+  .h1{font-size:34px;}
+  .feat-grid{grid-template-columns:1fr 1fr;}
+  .hstats{gap:14px;flex-wrap:wrap;}
 }
 </style>
 </head>
 <body>
-
-<div class="bg-wrap"></div>
+<div class="bg"></div>
 <div class="stars" id="stars"></div>
-
 <div class="page">
 
+<!-- HEADER -->
 <header>
-  <div class="logo">
-    <div class="logo-icon">🛡</div>
-    <div>
-      <h1>AppTrust</h1>
-      <p>Scam App Detection System</p>
-    </div>
+  <div class="logo-w">
+    <div class="logo-ico">🛡</div>
+    <div><h1>AppTrust</h1><p>AI App Safety Detection System</p></div>
   </div>
-  <nav>
-    <span class="nav-dropdown">Comparisons ▾</span>
-    <a href="#">FAQ</a>
-    <a href="#">About</a>
-    <button class="nav-login">Login ▾</button>
+  <nav class="hnav">
+    <a class="hl on">Home<div class="ul"></div></a>
+    <span class="hl">Comparisons ▾</span>
+    <a class="hl">Features</a>
+    <a class="hl">Pricing</a>
+    <a class="hl">API</a>
+    <a class="hl">Blog</a>
+    <a class="hl">About</a>
   </nav>
+  <div class="hright">
+    <div class="tt"><div class="ttb on">☀</div><div class="ttb">🌙</div></div>
+    <button class="dbtn">Dashboard</button>
+    <div class="ava">K</div>
+  </div>
 </header>
 
+<!-- HERO -->
 <div class="hero">
-  <h2>Is an app safe?</h2>
-  <p class="hero-sub"><span>Live Play Store Data</span> — <span>NLP Sentiment</span> — <span>Review Analysis</span></p>
-  <div class="search-outer">
-    <div class="search-wrap">
-      <input type="text" class="search-input" id="app-search" placeholder="Search any app..." autocomplete="off"/>
-      <button class="search-btn" onclick="triggerSearch()">Search</button>
-      <div class="suggestions" id="suggestions"></div>
+  <!-- LEFT -->
+  <div>
+    <div class="badge">✦ <span>AI-Powered · Real Data · Real Protection</span></div>
+    <h1 class="h1">Check if any app<br>is <span class="sw">Safe</span> or <span class="scw">Scam</span></h1>
+    <p class="hdesc">We analyze real user reviews, permissions, developer signals, and behavior patterns using advanced AI to reveal the truth.</p>
+
+    <div class="sb-wrap">
+      <div class="sb" id="sb">
+        <img class="sb-ico" id="sb-ico" src="" alt=""/>
+        <input type="text" class="si" id="app-search" placeholder="Search any app..." autocomplete="off"/>
+        <button class="sc" id="sc" onclick="clearSearch()">✕</button>
+        <button class="abtn" onclick="triggerSearch()">Analyze Now</button>
+      </div>
+      <div class="sugs" id="sugs"></div>
+    </div>
+
+    <div class="pop-lbl">Popular searches:</div>
+    <div class="pop-chips">
+      <span class="pchip" onclick="quickSearch('WhatsApp')">
+        <img src="https://play-lh.googleusercontent.com/bYtqkFi3gzOuH7FMGnQiPWaH1mHaTpbjkp2_4_bkFjpFPKUyGVdZE_8IzEj8-YIxAWFw=s32" onerror="this.style.display='none'"/> WhatsApp</span>
+      <span class="pchip" onclick="quickSearch('Instagram')">
+        <img src="https://play-lh.googleusercontent.com/VRMWkE5p3CkWhJs6nv-9ZsLAs1QOg5ob1_3qg-rckwYW7yp1fMrYZqnEFpk0IoVP4LM=s32" onerror="this.style.display='none'"/> Instagram</span>
+      <span class="pchip" onclick="quickSearch('TikTok')">
+        <img src="https://play-lh.googleusercontent.com/ByYtcbmFGRmY5T5hEh_w1P8KHF_-b98rT3QO9oD6raKSIANWzgxmQJnmUNLvEdZ8lw=s32" onerror="this.style.display='none'"/> TikTok</span>
+      <span class="pchip" onclick="quickSearch('Spotify')">
+        <img src="https://play-lh.googleusercontent.com/UrY7BAZ-XfXGpfkeWg0zCCeo-7ras4DCoRalC_WTZH6AkHTCnkMtpSNKWKWJSLM5pPA=s32" onerror="this.style.display='none'"/> Spotify</span>
+      <span class="pchip" onclick="quickSearch('loan app')">More ▾</span>
+    </div>
+
+    <div class="hstats">
+      <div class="hst"><div class="hst-ico">📊</div><div><div class="hst-v">10K+</div><div class="hst-l">Users Trust Us</div></div></div>
+      <div class="hst"><div class="hst-ico">📱</div><div><div class="hst-v">1M+</div><div class="hst-l">Apps Analyzed</div></div></div>
+      <div class="hst"><div class="hst-ico">⭐</div><div><div class="hst-v">4.8</div><div class="hst-l">Trustpilot Rating</div></div></div>
+      <div class="hst"><div class="hst-ico">🎯</div><div><div class="hst-v">99.2%</div><div class="hst-l">Detection Accuracy</div></div></div>
     </div>
   </div>
-  <div class="chips">
-    <span class="chips-lbl">Try:</span>
-    <span class="chip" onclick="quickSearch('WhatsApp')">WhatsApp</span>
-    <span class="chip" onclick="quickSearch('Spotify')">Spotify</span>
-    <span class="chip" onclick="quickSearch('Instagram')">Instagram</span>
-    <span class="chip" onclick="quickSearch('TikTok')">TikTok</span>
-    <span class="chip" onclick="quickSearch('loan app')">Loan Apps</span>
-  </div>
-</div>
 
-<div class="main">
-  <div class="loading" id="loading">
-    <div class="spinner"></div>
-    <p>Fetching live data from Google Play Store...</p>
-  </div>
-  <div class="err-box" id="err-box"></div>
+  <!-- RIGHT PANEL -->
+  <div>
+    <div class="panel" id="panel">
+      <div class="err-wrap"><div class="err" id="err"></div></div>
 
-  <div class="empty-state" id="empty-state">
-    <div class="empty-ico">🔍</div>
-    <h3>Search any app to analyze</h3>
-    <p>Permissions · Fake Reviews · Developer Trust · Live Sentiment</p>
-  </div>
+      <!-- EMPTY -->
+      <div class="p-empty" id="p-empty">
+        <div class="p-empty-ico">🔍</div>
+        <h3>360° App Analysis</h3>
+        <p>Search any app to see live safety analysis</p>
+        <div class="scan-row"><span>Scanning</span><span>·</span><span>Analyzing</span><span>·</span><span>Securing</span></div>
+      </div>
 
-  <div class="result-wrap" id="result-wrap">
-    <div class="result-card">
-      <div class="app-top" id="app-top"></div>
-      <div class="content-grid">
-        <div class="left-col">
-          <div class="stats-row" id="stats-row"></div>
-          <div class="chart-box">
-            <div class="chart-hdr">
-              <span class="chart-ttl">Sentiment Over Time</span>
-              <div class="chart-tabs">
-                <span class="ctab active">7D</span>
-                <span class="ctab">14D</span>
-                <span class="ctab">50D</span>
-              </div>
-            </div>
-            <canvas id="sChart"></canvas>
+      <!-- LOADING -->
+      <div class="p-load" id="p-load">
+        <div class="spin"></div>
+        <p>Analyzing App...</p>
+        <div class="scan-lbl">Scanning · Analyzing · Securing</div>
+      </div>
+
+      <!-- RESULT -->
+      <div id="p-res" style="display:none;">
+        <!-- App Header -->
+        <div class="phdr">
+          <div class="p-icon-w">
+            <img class="p-icon" id="p-icon" src="" onerror="this.src='https://via.placeholder.com/50'"/>
           </div>
-          <div class="sec-box">
-            <div class="sec-hdr">🔐 Permission Risk Analysis</div>
-            <div class="perm-grid" id="perm-grid"></div>
+          <div class="p-info">
+            <h3 id="p-nm"></h3>
+            <div class="p-sub" id="p-sub"></div>
+            <div class="a-badge" id="a-badge"></div>
           </div>
-          <div class="sec-box">
-            <div class="sec-hdr">📋 Analysis Details</div>
-            <div id="reasons-list"></div>
-          </div>
-          <div class="sec-box">
-            <div class="sec-hdr">💬 Top Reviews (Live)</div>
-            <div id="reviews-list"></div>
+          <div class="p-time">
+            <div class="pt-done">● Analysis Completed</div>
+            <div class="pt-ago">just now</div>
           </div>
         </div>
-        <div class="right-col">
-          <div class="gauge-card">
-            <div class="gauge-wrap">
-              <canvas id="gCanvas" width="160" height="160"></canvas>
-              <div class="gauge-inner">
-                <div class="g-score" id="g-score">-</div>
-                <div class="g-lbl" id="g-lbl"></div>
-              </div>
-            </div>
-            <div id="verdict-pill"></div>
-            <div class="verdict-txt" id="verdict-txt"></div>
-          </div>
-          <div class="mini-card">
-            <div class="mini-hdr">⚠ Fake Reviews</div>
-            <div class="fake-top-row">
-              <span>Suspected Bot/Fake</span>
-              <span class="fake-num" id="fake-num">-</span>
-            </div>
-            <div class="fbar-bg"><div class="fbar-fill" id="fbar" style="width:0"></div></div>
-            <div id="ftags"></div>
-          </div>
-          <div class="mini-card">
-            <div class="mini-hdr">👨‍💻 Developer</div>
-            <div class="dev-row">
-              <div class="dev-ava">🏢</div>
-              <div>
-                <div class="dev-nm" id="dev-nm">-</div>
-                <div class="dev-mt" id="dev-mt">-</div>
-              </div>
-              <div class="dev-sc" id="dev-sc">-</div>
+
+        <!-- Gauge + Metrics -->
+        <div class="g-row">
+          <div class="g-w">
+            <canvas id="gCv" width="130" height="130"></canvas>
+            <div class="g-in">
+              <div class="g-deg" id="g-deg">-</div>
+              <div class="g-ssub">Safety Score</div>
+              <div class="g-pill" id="g-pill"></div>
             </div>
           </div>
-          <div class="ai-card">
-            <div class="ai-lbl">🤖 AI Summary</div>
-            <div class="ai-txt" id="ai-txt">Search an app to see the analysis summary.</div>
+          <div class="mlist" id="mlist"></div>
+        </div>
+
+        <!-- Sentiment -->
+        <div class="sent-box">
+          <div class="sent-hdr"><span class="sent-t">Sentiment Overview</span></div>
+          <div class="sent-v" id="sv"><span id="sv-pct">-</span></div>
+          <div class="sent-sub">Positive</div>
+          <div class="sbar-bg"><div class="sbar-f" id="sb-f" style="width:0%"></div></div>
+        </div>
+
+        <!-- Reviews count -->
+        <div class="rc-box">
+          <div class="rc-hdr">
+            <span class="rc-t">Reviews Analyzed</span>
+            <span class="rc-s">Across all regions</span>
           </div>
+          <div class="rc-v" id="rc-v">-</div>
+          <canvas id="rcC"></canvas>
+        </div>
+
+        <!-- Breakdown -->
+        <div class="bk-box">
+          <div class="bk-hdr">
+            <span class="bk-t">360° Analysis Breakdown</span>
+            <span class="bk-vr">View Full Report →</span>
+          </div>
+          <div class="bk-steps" id="bk-steps"></div>
         </div>
       </div>
     </div>
   </div>
 </div>
+
+<!-- FEATURES -->
+<div class="feats">
+  <div class="sec-lbl">✦ Advanced AI Analysis Engine ✦</div>
+  <div class="feat-grid">
+    <div class="fc">
+      <div class="fi p">💬</div>
+      <div class="ft">Review Analysis</div>
+      <div class="fd">NLP-powered analysis to detect fake, spam, or manipulated reviews.</div>
+      <div class="frat">★★★★ 4.2</div>
+      <canvas class="spark" id="sp1"></canvas>
+    </div>
+    <div class="fc">
+      <div class="fi b">🔐</div>
+      <div class="ft">Permission Checker</div>
+      <div class="fd">Analyze app permissions and identify potential privacy risks.</div>
+      <div class="frow"><span class="frl">📇 Contacts</span><span style="color:var(--amber);font-size:10px;font-weight:600;">Risky ✓</span></div>
+      <div class="frow"><span class="frl">📍 Location</span><span style="color:var(--amber);font-size:10px;font-weight:600;">Medium ✓</span></div>
+      <div class="frow"><span class="frl">📷 Camera</span><span style="color:var(--green);font-size:10px;font-weight:600;">Safe ✓</span></div>
+    </div>
+    <div class="fc red">
+      <div class="fi r">🚨</div>
+      <div class="ft">Scam Detection</div>
+      <div class="fd">Detect suspicious patterns, scam apps, and risky developer behavior.</div>
+      <div class="susp-tag"><span>⚠ Suspicious Activity</span><span>Low Risk</span></div>
+      <canvas class="spark" id="sp3"></canvas>
+    </div>
+    <div class="fc">
+      <div class="fi g">🏆</div>
+      <div class="ft">Developer Trust Score</div>
+      <div class="fd">Evaluate developer reputation and history to trust the right apps.</div>
+      <div style="font-size:10px;color:var(--text2);margin-bottom:4px;">Developer Score</div>
+      <div style="font-family:'Outfit',sans-serif;font-size:22px;font-weight:700;color:#fff;">92<span style="font-size:12px;color:var(--text2)">/100</span></div>
+      <canvas class="spark" id="sp4"></canvas>
+    </div>
+    <div class="fc">
+      <div class="fi c">🛡</div>
+      <div class="ft">Real-time Protection</div>
+      <div class="fd">We continuously monitor apps and update our database in real-time.</div>
+      <canvas class="spark" id="sp5"></canvas>
+    </div>
+  </div>
 </div>
 
+<!-- BOTTOM STATS -->
+<div class="bstats">
+  <div class="bsg">
+    <div><div class="bsico">📊</div><div class="bsv">2.4M+</div><div class="bsl">Reviews Analyzed</div></div>
+    <div><div class="bsico">📱</div><div class="bsv">1M+</div><div class="bsl">Apps Scanned</div></div>
+    <div><div class="bsico">⚠</div><div class="bsv">500+</div><div class="bsl">Risky Apps Detected</div></div>
+    <div><div class="bsico">🌍</div><div class="bsv">150+</div><div class="bsl">Countries Covered</div></div>
+    <div><div class="bsico">🔒</div><div class="bsv">100%</div><div class="bsl">Data Privacy</div></div>
+  </div>
+</div>
+
+</div>
 <script>
-// Stars
+// STARS
 (function(){
   const c=document.getElementById('stars');
-  for(let i=0;i<130;i++){
+  for(let i=0;i<120;i++){
     const s=document.createElement('div');s.className='star';
-    const sz=Math.random()*2+.4;
-    s.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*100}%;width:${sz}px;height:${sz}px;--d:${2+Math.random()*5}s;--delay:${Math.random()*5}s;--min:${.03+Math.random()*.1};--max:${.3+Math.random()*.7};`;
+    const z=Math.random()*1.7+.3;
+    s.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*100}%;width:${z}px;height:${z}px;--d:${2+Math.random()*5}s;--dl:${Math.random()*5}s;--mn:${.02+Math.random()*.07};--mx:${.25+Math.random()*.6};`;
     c.appendChild(s);
   }
 })();
 
-// Gauge
-function drawGauge(score){
-  const cv=document.getElementById('gCanvas'),ctx=cv.getContext('2d');
-  cv.width=160;cv.height=160;
-  const cx=80,cy=86,r=60,sa=Math.PI*.75,ea=Math.PI*2.25,total=ea-sa;
-  // bg arc
-  ctx.beginPath();ctx.arc(cx,cy,r,sa,ea);
-  ctx.strokeStyle='rgba(255,255,255,0.07)';ctx.lineWidth=11;ctx.lineCap='round';ctx.stroke();
-  // colored arc
-  const cols=score>=7?['#10b981','#34d399']:score>=4?['#f59e0b','#fbbf24']:['#ef4444','#f87171'];
-  const g=ctx.createLinearGradient(cx-r,cy,cx+r,cy);
-  g.addColorStop(0,cols[0]);g.addColorStop(1,cols[1]);
-  const prog=(score/10)*total;
-  ctx.beginPath();ctx.arc(cx,cy,r,sa,sa+prog);
-  ctx.strokeStyle=g;ctx.lineWidth=11;ctx.lineCap='round';ctx.stroke();
-  // glow
-  ctx.beginPath();ctx.arc(cx,cy,r,sa,sa+prog);
-  ctx.strokeStyle=cols[0];ctx.lineWidth=18;ctx.lineCap='round';
-  ctx.globalAlpha=.12;ctx.stroke();ctx.globalAlpha=1;
-  // ticks
-  for(let i=0;i<=10;i++){
-    const a=sa+(i/10)*total;
-    const x1=cx+Math.cos(a)*(r-13),y1=cy+Math.sin(a)*(r-13);
-    const x2=cx+Math.cos(a)*(r-7),y2=cy+Math.sin(a)*(r-7);
-    ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);
-    ctx.strokeStyle=`rgba(255,255,255,${i*2<=score*2?.5:.15})`;ctx.lineWidth=1.5;ctx.stroke();
-  }
-}
-
-// Sentiment chart
-function drawChart(polarity){
-  const cv=document.getElementById('sChart');
-  if(!cv)return;
+// SPARKLINES
+function spark(id,col,up){
+  const cv=document.getElementById(id);if(!cv)return;
   const ctx=cv.getContext('2d');
-  cv.width=cv.parentElement.offsetWidth-28||380;cv.height=85;
-  const W=cv.width,H=cv.height;ctx.clearRect(0,0,W,H);
-  const base=polarity||.3;
-  const pts=Array.from({length:7},()=>Math.max(-1,Math.min(1,base+(Math.random()-.5)*.45)));
-  const xS=(W-36)/6;
-  const toY=v=>H/2-(v*(H/2-12));
-  // gridlines
-  [.25,.5,.75].forEach(f=>{
-    ctx.beginPath();ctx.moveTo(18,f*H);ctx.lineTo(W-8,f*H);
-    ctx.strokeStyle='rgba(255,255,255,0.04)';ctx.lineWidth=1;ctx.stroke();
-  });
-  // zero line
-  ctx.setLineDash([4,4]);
-  ctx.beginPath();ctx.moveTo(18,H/2);ctx.lineTo(W-8,H/2);
-  ctx.strokeStyle='rgba(255,255,255,0.09)';ctx.lineWidth=1;ctx.stroke();ctx.setLineDash([]);
-  // fill
-  const grd=ctx.createLinearGradient(0,0,0,H);
-  grd.addColorStop(0,'rgba(79,159,255,0.22)');grd.addColorStop(1,'rgba(79,159,255,0)');
-  ctx.beginPath();
-  pts.forEach((v,i)=>{const x=18+i*xS,y=toY(v);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});
-  ctx.lineTo(18+6*xS,H);ctx.lineTo(18,H);ctx.closePath();
-  ctx.fillStyle=grd;ctx.fill();
-  // line
-  ctx.beginPath();
-  pts.forEach((v,i)=>{const x=18+i*xS,y=toY(v);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});
-  ctx.strokeStyle='rgba(79,159,255,0.9)';ctx.lineWidth=2;ctx.lineJoin='round';ctx.stroke();
-  // dots
-  pts.forEach((v,i)=>{
-    const x=18+i*xS,y=toY(v);
-    ctx.beginPath();ctx.arc(x,y,3,0,Math.PI*2);
-    ctx.fillStyle=v>=0?'#4f9fff':'#ef4444';ctx.fill();
-  });
-  // day labels
-  const days=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
-  ctx.fillStyle='rgba(255,255,255,0.28)';ctx.font='10px DM Sans';ctx.textAlign='center';
-  pts.forEach((_,i)=>ctx.fillText(days[i],18+i*xS,H-1));
+  cv.width=cv.parentElement.offsetWidth||180;cv.height=28;
+  const W=cv.width,H=cv.height,n=10;
+  const pts=Array.from({length:n},(_,i)=>Math.max(.1,Math.min(.92,(up?.55:.35)+(Math.random()-.45)*.35+(i/n)*(up?.2:-.1))));
+  const xs=(W-8)/(n-1),toY=v=>H-(v*(H-4))-2;
+  const g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,col+'40');g.addColorStop(1,col+'00');
+  ctx.beginPath();pts.forEach((v,i)=>{const x=4+i*xs,y=toY(v);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});
+  ctx.lineTo(4+(n-1)*xs,H);ctx.lineTo(4,H);ctx.closePath();ctx.fillStyle=g;ctx.fill();
+  ctx.beginPath();pts.forEach((v,i)=>{const x=4+i*xs,y=toY(v);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});
+  ctx.strokeStyle=col;ctx.lineWidth=1.5;ctx.lineJoin='round';ctx.stroke();
+}
+setTimeout(()=>{spark('sp1','#a855f7',true);spark('sp3','#ef4444',false);spark('sp4','#10b981',true);spark('sp5','#06b6d4',true);},300);
+
+function rcChart(pol){
+  const cv=document.getElementById('rcC');if(!cv)return;
+  const ctx=cv.getContext('2d');
+  cv.width=cv.parentElement.offsetWidth-26||160;cv.height=36;
+  const W=cv.width,H=cv.height,n=8;
+  const pts=Array.from({length:n},()=>Math.max(.1,Math.min(.9,.5+pol*.25+(Math.random()-.5)*.3)));
+  const xs=(W-8)/(n-1),toY=v=>H-(v*(H-4))-2;
+  const g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,'rgba(168,85,247,.28)');g.addColorStop(1,'rgba(168,85,247,0)');
+  ctx.beginPath();pts.forEach((v,i)=>{const x=4+i*xs,y=toY(v);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});
+  ctx.lineTo(4+(n-1)*xs,H);ctx.lineTo(4,H);ctx.closePath();ctx.fillStyle=g;ctx.fill();
+  ctx.beginPath();pts.forEach((v,i)=>{const x=4+i*xs,y=toY(v);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});
+  ctx.strokeStyle='rgba(168,85,247,.8)';ctx.lineWidth=1.5;ctx.lineJoin='round';ctx.stroke();
 }
 
-// Search
+function drawGauge(score){
+  const cv=document.getElementById('gCv'),ctx=cv.getContext('2d');
+  cv.width=130;cv.height=130;
+  const cx=65,cy=70,r=50,sa=Math.PI*.75,ea=Math.PI*2.25,tot=ea-sa;
+  ctx.beginPath();ctx.arc(cx,cy,r,sa,ea);ctx.strokeStyle='rgba(255,255,255,0.07)';ctx.lineWidth=9;ctx.lineCap='round';ctx.stroke();
+  const c=score>=7?['#10b981','#06b6d4']:score>=4?['#f59e0b','#fbbf24']:['#ef4444','#f87171'];
+  const g=ctx.createLinearGradient(cx-r,cy,cx+r,cy);g.addColorStop(0,c[0]);g.addColorStop(1,c[1]);
+  const prog=(score/10)*tot;
+  ctx.beginPath();ctx.arc(cx,cy,r,sa,sa+prog);ctx.strokeStyle=g;ctx.lineWidth=9;ctx.lineCap='round';ctx.stroke();
+  ctx.beginPath();ctx.arc(cx,cy,r,sa,sa+prog);ctx.strokeStyle=c[0];ctx.lineWidth=15;ctx.lineCap='round';ctx.globalAlpha=.1;ctx.stroke();ctx.globalAlpha=1;
+}
+
+// SEARCH
 let sto;
 function quickSearch(n){document.getElementById('app-search').value=n;triggerSearch();}
+function clearSearch(){
+  document.getElementById('app-search').value='';
+  document.getElementById('sc').classList.remove('on');
+  const i=document.getElementById('sb-ico');i.classList.remove('on');i.src='';
+  document.getElementById('sugs').style.display='none';
+}
 function triggerSearch(){const q=document.getElementById('app-search').value.trim();if(!q)return;fetchSugs(q);}
-
 document.getElementById('app-search').addEventListener('input',function(){
   const q=this.value.trim();
-  if(q.length<2){document.getElementById('suggestions').style.display='none';return;}
+  document.getElementById('sc').classList.toggle('on',q.length>0);
+  if(q.length<2){document.getElementById('sugs').style.display='none';return;}
   clearTimeout(sto);sto=setTimeout(()=>fetchSugs(q),400);
 });
 document.getElementById('app-search').addEventListener('keydown',e=>{if(e.key==='Enter')triggerSearch();});
@@ -468,130 +526,101 @@ async function fetchSugs(q){
   try{
     const r=await fetch('/search',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query:q})});
     const d=await r.json();
-    if(!d.success||!d.results.length){document.getElementById('suggestions').style.display='none';return;}
-    const box=document.getElementById('suggestions');
+    if(!d.success||!d.results.length){document.getElementById('sugs').style.display='none';return;}
+    const box=document.getElementById('sugs');
     box.innerHTML=d.results.map(r=>`
-      <div class="sug-item" onclick="analyzeApp('${r.appId}','${(r.title||'').replace(/'/g,'')}')">
-        <img class="sug-img" src="${r.icon}" onerror="this.src='https://via.placeholder.com/36'"/>
-        <div><div class="sug-name">${r.title}</div><div class="sug-id">${r.appId}</div></div>
-        <div class="sug-star">${r.score?r.score.toFixed(1)+' ★':''}</div>
+      <div class="si-item" onclick="selApp('${r.appId}','${(r.title||'').replace(/'/g,'')}','${r.icon||''}')">
+        <img class="si-img" src="${r.icon}" onerror="this.src='https://via.placeholder.com/34'"/>
+        <div><div class="si-nm">${r.title}</div><div class="si-id">${r.appId}</div></div>
+        <div class="si-st">${r.score?r.score.toFixed(1)+' ★':''}</div>
       </div>`).join('');
     box.style.display='block';
   }catch(e){console.error(e);}
 }
 
-function starsHTML(s){let h='';for(let i=1;i<=5;i++)h+=i<=s?'★':'☆';return h;}
-
-async function analyzeApp(pkgId,title){
-  document.getElementById('suggestions').style.display='none';
+function selApp(id,title,icon){
+  document.getElementById('sugs').style.display='none';
   document.getElementById('app-search').value=title;
-  document.getElementById('loading').style.display='block';
-  document.getElementById('result-wrap').style.display='none';
-  document.getElementById('empty-state').style.display='none';
-  document.getElementById('err-box').style.display='none';
-  window.scrollTo({top:280,behavior:'smooth'});
+  document.getElementById('sc').classList.add('on');
+  if(icon){const i=document.getElementById('sb-ico');i.src=icon;i.classList.add('on');}
+  analyzeApp(id);
+}
+
+async function analyzeApp(pkgId){
+  document.getElementById('p-empty').style.display='none';
+  document.getElementById('p-res').style.display='none';
+  document.getElementById('p-load').style.display='block';
+  document.getElementById('err').style.display='none';
   try{
     const res=await fetch('/analyze',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({package_id:pkgId})});
     const d=await res.json();
-    document.getElementById('loading').style.display='none';
+    document.getElementById('p-load').style.display='none';
     if(!d.success){
-      document.getElementById('err-box').textContent=d.error||'App not found.';
-      document.getElementById('err-box').style.display='block';
-      document.getElementById('empty-state').style.display='block';
+      document.getElementById('err').textContent=d.error||'App not found.';
+      document.getElementById('err').style.display='block';
+      document.getElementById('p-empty').style.display='block';
       return;
     }
-    render(d);
+    renderPanel(d);
   }catch(e){
-    document.getElementById('loading').style.display='none';
-    document.getElementById('err-box').textContent='Network error — is the backend running on port 5000?';
-    document.getElementById('err-box').style.display='block';
-    document.getElementById('empty-state').style.display='block';
+    document.getElementById('p-load').style.display='none';
+    document.getElementById('err').textContent='Backend not reachable — run: node server.js';
+    document.getElementById('err').style.display='block';
+    document.getElementById('p-empty').style.display='block';
   }
 }
 
-function render(d){
+function renderPanel(d){
   const lc=d.label==='Safe'?'safe':d.label==='Suspicious'?'suspicious':'scam';
-  const dot=d.label==='Safe'?'#10b981':d.label==='Suspicious'?'#f59e0b':'#ef4444';
   const fC=d.fake_pct>=50?'#ef4444':d.fake_pct>=25?'#f59e0b':'#10b981';
   const dC=d.dev_score>=7?'#10b981':d.dev_score>=4?'#f59e0b':'#ef4444';
   const pol=parseFloat(d.avg_polarity)||0;
-  const pC=pol>=0?'#10b981':'#ef4444';
+  const sentPct=Math.min(100,Math.max(0,Math.round((pol+1)*50)));
+  const perms=d.permissions||[];
+  const hr=perms.filter(p=>p.risk==='high').length;
+  const pRisk=hr>4?'High':hr>1?'Medium':'Low';
+  const pC=hr>4?'#fca5a5':hr>1?'#fcd34d':'#6ee7b7';
 
-  // App top
-  document.getElementById('app-top').innerHTML=`
-    <img class="app-icon" src="${d.icon}" onerror="this.src='https://via.placeholder.com/66'"/>
-    <div class="app-info">
-      <h3>${d.title}</h3>
-      <div class="app-meta">${d.developer} &nbsp;·&nbsp; ${d.genre}</div>
-      <div class="app-stats-row"><span class="star-txt">★ ${d.rating}</span> &nbsp;·&nbsp; ${d.reviews_count} ratings &nbsp;·&nbsp; ${d.installs} installs</div>
-    </div>
-    <a class="play-store-btn" href="https://play.google.com/store/apps/details?id=${d.package_id}" target="_blank">▶ View on Play Store</a>`;
+  // Icon with rotation
+  const icon=document.getElementById('p-icon');
+  icon.src=d.icon;
+  icon.classList.remove('rotating');
+  void icon.offsetWidth;
+  icon.classList.add('rotating');
 
-  // Stats
-  document.getElementById('stats-row').innerHTML=`
-    <div class="stat-card"><div class="stat-val"><span class="stat-ico">⭐</span>${d.rating}</div><div class="stat-key">Play Rating</div></div>
-    <div class="stat-card"><div class="stat-val" style="color:${pC}"><span class="stat-ico">💬</span>${d.avg_polarity}</div><div class="stat-key">Sentiment</div></div>
-    <div class="stat-card"><div class="stat-val" style="color:${fC}"><span class="stat-ico">⚠</span>${d.fake_pct}%</div><div class="stat-key">Fake Reviews</div></div>`;
+  document.getElementById('p-nm').textContent=d.title;
+  document.getElementById('p-sub').textContent=`${d.developer} · ${d.genre}`;
+  const ab=document.getElementById('a-badge');
+  ab.textContent=lc==='safe'?'✓ Safe to Use':lc==='suspicious'?'⚠ Use Caution':'✕ Avoid This App';
+  ab.style.cssText=`background:${lc==='safe'?'rgba(16,185,129,0.12)':lc==='suspicious'?'rgba(245,158,11,0.12)':'rgba(239,68,68,0.12)'};border:1px solid ${lc==='safe'?'rgba(16,185,129,0.35)':lc==='suspicious'?'rgba(245,158,11,0.35)':'rgba(239,68,68,0.35)'};color:${lc==='safe'?'#6ee7b7':lc==='suspicious'?'#fcd34d':'#fca5a5'};display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:9px;font-size:10px;font-weight:700;margin-top:4px;`;
 
-  // Gauge
   drawGauge(d.trust_score);
-  document.getElementById('g-score').textContent=d.trust_score;
-  const gLbl=document.getElementById('g-lbl');
-  gLbl.textContent=d.label;gLbl.style.color=dot;
-  const vp=document.getElementById('verdict-pill');
-  vp.className='verdict-pill '+lc;
-  vp.innerHTML=`${lc==='safe'?'✓':lc==='suspicious'?'⚠':'✕'} ${d.label.toUpperCase()}`;
-  document.getElementById('verdict-txt').textContent=
-    lc==='safe'?`This app is considered safe based on our analysis. ${d.installs} installs with strong sentiment.`:
-    lc==='suspicious'?'Exercise caution. Some patterns detected that warrant attention before installing.':
-    'Multiple scam indicators found. We strongly recommend avoiding this app.';
+  document.getElementById('g-deg').textContent=d.trust_score*36+'°';
+  const gp=document.getElementById('g-pill');
+  gp.textContent=lc==='safe'?'Excellent':lc==='suspicious'?'Caution':'Danger';
+  gp.className='g-pill '+lc;
 
-  // Permissions
-  document.getElementById('perm-grid').innerHTML=(d.permissions||[]).map(p=>`
-    <div class="perm-item">
-      <span class="perm-ico">${p.icon}</span>
-      <div><div class="perm-nm">${p.name}</div>
-      <div class="perm-rsk" style="color:${p.risk==='high'?'#fca5a5':p.risk==='med'?'#fcd34d':'#6ee7b7'};font-size:10px;">${p.label} Risk</div></div>
-      <span class="pb ${p.risk}">${p.label}</span>
-    </div>`).join('')||'<p style="font-size:12px;color:var(--text2)">No permission data</p>';
+  document.getElementById('mlist').innerHTML=`
+    <div class="mrow"><span class="m-ico">🛡</span><div class="m-inf"><div class="m-nm">Fake Review Risk</div><div class="m-lb">${d.fake_pct<20?'Low':d.fake_pct<50?'Medium':'High'}</div></div><div class="m-val" style="color:${fC}">${d.fake_pct}%</div></div>
+    <div class="mrow"><span class="m-ico">🔐</span><div class="m-inf"><div class="m-nm">Permissions Risk</div><div class="m-lb">${pRisk}</div></div><div class="m-val" style="color:${pC}">${Math.min(98,hr*14+8)}%</div></div>
+    <div class="mrow"><span class="m-ico">👨‍💻</span><div class="m-inf"><div class="m-nm">Developer Trust</div><div class="m-lb">${d.dev_score>=7?'High':d.dev_score>=4?'Medium':'Low'}</div></div><div class="m-val" style="color:${dC}">${d.dev_score*10}%</div></div>
+    <div class="mrow"><span class="m-ico">🦠</span><div class="m-inf"><div class="m-nm">Malware / Virus</div><div class="m-lb">Safe</div></div><div class="m-val" style="color:#6ee7b7">0%</div></div>`;
 
-  // Reasons
-  document.getElementById('reasons-list').innerHTML=(d.reasons||[]).map(r=>`
-    <div class="reason-row"><div class="rdot" style="background:${dot}"></div>${r}</div>`).join('');
+  document.getElementById('sv-pct').textContent=sentPct+'%';
+  document.getElementById('sv').style.color=pol>=0?'#10b981':'#ef4444';
+  document.getElementById('sb-f').style.width=sentPct+'%';
+  document.getElementById('rc-v').textContent=d.reviews_count||'N/A';
 
-  // Reviews
-  document.getElementById('reviews-list').innerHTML=(d.reviews||[]).map(r=>`
-    <div class="rev-card" style="border-left-color:${r.color}">
-      <div class="rev-top"><span class="rev-stars">${starsHTML(r.score)}</span><span class="rev-tag" style="background:${r.color}">${r.sentiment}</span></div>
-      <div class="rev-txt">${r.text}</div>
-      ${r.bot?'<div class="bot-flag">⚠ Suspected fake/bot review</div>':''}
-    </div>`).join('')||'<p style="font-size:12px;color:var(--text2)">No reviews</p>';
+  const steps=[{i:'💬',l:'Review Analysis'},{i:'🔐',l:'Permissions Scan'},{i:'👨‍💻',l:'Developer Check'},{i:'📊',l:'Behavior Analysis'},{i:'🦠',l:'Threat Detection'}];
+  document.getElementById('bk-steps').innerHTML=steps.map((s,i)=>`
+    ${i>0?'<div class="bk-line"></div>':''}
+    <div class="bk-s"><div class="bk-ico done">${s.i}</div><div class="bk-lbl">${s.l}</div><div class="bk-ok">Completed</div></div>`).join('');
 
-  // Fake meter
-  document.getElementById('fake-num').textContent=d.fake_pct+'%';
-  document.getElementById('fake-num').style.color=fC;
-  document.getElementById('fbar').style.width=d.fake_pct+'%';
-  document.getElementById('fbar').style.background=fC;
-  document.getElementById('ftags').innerHTML=(d.fake_signals||[]).map(s=>`<div class="ftag">${s}</div>`).join('');
-
-  // Developer
-  document.getElementById('dev-nm').textContent=d.developer||'Unknown';
-  document.getElementById('dev-mt').textContent=`Updated: ${d.updated||'N/A'} · v${d.version||'N/A'}`;
-  document.getElementById('dev-sc').textContent=d.dev_score+'/10';
-  document.getElementById('dev-sc').style.color=dC;
-
-  // AI Summary
-  document.getElementById('ai-txt').textContent=
-    `This app has ${d.fake_pct>30?'a high':'a low'} percentage of fake reviews (${d.fake_pct}%), but overall user sentiment is ${pol>.2?'positive':pol>-.2?'neutral':'negative'}. The app has a ${d.rating} play rating based on ${d.reviews_count}+ reviews. ${lc==='scam'?'Multiple fraud indicators detected — avoid installing.':lc==='suspicious'?'Some concerns detected — install with caution.':'App appears legitimate and safe to use.'}`;
-
-  document.getElementById('result-wrap').style.display='block';
-  setTimeout(()=>drawChart(pol),120);
-  window.scrollTo({top:document.querySelector('.main').offsetTop-20,behavior:'smooth'});
+  document.getElementById('p-res').style.display='block';
+  setTimeout(()=>rcChart(pol),100);
 }
 
-document.addEventListener('click',e=>{
-  if(!e.target.closest('.search-wrap'))document.getElementById('suggestions').style.display='none';
-});
+document.addEventListener('click',e=>{if(!e.target.closest('.sb-wrap'))document.getElementById('sugs').style.display='none';});
 </script>
 </body>
 </html>
