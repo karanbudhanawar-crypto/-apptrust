@@ -258,7 +258,180 @@ nav{display:flex;justify-content:space-between;align-items:center;
 </style>
 </head>
 <body>
-<div class="grid-bg"></div>
+
+<!-- ══════════════════════════════════════
+     LOGIN PAGE — shows first
+══════════════════════════════════════ -->
+<div id="login-page" style="display:flex;position:fixed;inset:0;background:#080c08;z-index:99999;align-items:center;justify-content:center;overflow-y:auto">
+
+  <!-- Scanlines -->
+  <div style="position:absolute;inset:0;pointer-events:none;
+    background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.04) 2px,rgba(0,0,0,.04) 4px)"></div>
+
+  <div style="width:100%;max-width:460px;padding:24px 20px;position:relative;z-index:1">
+
+    <!-- Logo -->
+    <div style="text-align:center;margin-bottom:36px">
+      <div style="font-family:'Share Tech Mono',monospace;font-size:52px;font-weight:800;
+        color:#00ff41;letter-spacing:-2px;
+        text-shadow:0 0 20px rgba(0,255,65,.5),0 0 60px rgba(0,255,65,.2);
+        animation:flicker2 9s infinite">GUARDIAN</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#5a8a5a;margin-top:6px;letter-spacing:1px">
+        > trust the app. not the rating.</div>
+    </div>
+
+    <!-- Card -->
+    <div style="background:#0c100c;border:1px solid rgba(0,255,65,.25);padding:28px 28px 24px;position:relative">
+
+      <!-- top accent line -->
+      <div style="position:absolute;top:0;left:0;right:0;height:2px;
+        background:linear-gradient(90deg,transparent,#00ff41,transparent)"></div>
+
+      <!-- ── 3 TABS ── -->
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;margin-bottom:26px;border-bottom:1px solid #1a3a1a">
+
+        <button id="tab-signin" onclick="switchTab('signin')"
+          style="background:none;border:none;border-bottom:2px solid #00ff41;
+          padding:10px 6px;font-family:'JetBrains Mono',monospace;font-size:11px;
+          cursor:pointer;color:#00ff41;transition:all .2s;white-space:nowrap;letter-spacing:.3px">
+          sign_in
+        </button>
+
+        <button id="tab-signup" onclick="switchTab('signup')"
+          style="background:none;border:none;border-bottom:2px solid transparent;
+          padding:10px 6px;font-family:'JetBrains Mono',monospace;font-size:11px;
+          cursor:pointer;color:#5a8a5a;transition:all .2s;white-space:nowrap;letter-spacing:.3px">
+          create_account
+        </button>
+
+        <button id="tab-guest" onclick="switchTab('guest')"
+          style="background:none;border:none;border-bottom:2px solid transparent;
+          padding:10px 6px;font-family:'JetBrains Mono',monospace;font-size:11px;
+          cursor:pointer;color:#5a8a5a;transition:all .2s;white-space:nowrap;letter-spacing:.3px"
+          onmouseover="if(currentTab!=='guest')this.style.color='#ffaa00'"
+          onmouseout="if(currentTab!=='guest')this.style.color='#5a8a5a'">
+          guest
+        </button>
+
+      </div>
+
+      <!-- ── AUTH FIELDS (sign_in + create_account) ── -->
+      <div id="auth-fields">
+
+        <!-- Username — create_account only -->
+        <div id="name-wrap-outer" style="margin-bottom:14px;display:none">
+          <div style="font-size:9px;color:#5a8a5a;font-family:'JetBrains Mono',monospace;
+            letter-spacing:1.5px;margin-bottom:6px">USERNAME</div>
+          <div style="display:flex;align-items:center;background:#080c08;border:1px solid #1a3a1a;transition:border .2s" id="name-border">
+            <span style="color:#00ff41;padding:0 10px;font-size:13px;flex-shrink:0">›</span>
+            <input id="auth-name" type="text" placeholder="your name"
+              style="flex:1;background:none;border:none;padding:11px 10px 11px 0;
+              color:#b8ffb8;font-family:'JetBrains Mono',monospace;font-size:13px;outline:none"
+              onfocus="document.getElementById('name-border').style.borderColor='#00ff41'"
+              onblur="document.getElementById('name-border').style.borderColor='#1a3a1a'"
+              onkeydown="if(event.key==='Enter')submitAuth()"/>
+          </div>
+        </div>
+
+        <!-- Email -->
+        <div style="margin-bottom:14px">
+          <div style="font-size:9px;color:#5a8a5a;font-family:'JetBrains Mono',monospace;
+            letter-spacing:1.5px;margin-bottom:6px">EMAIL</div>
+          <div style="display:flex;align-items:center;background:#080c08;border:1px solid #1a3a1a;transition:border .2s" id="email-wrap">
+            <span style="color:#00ff41;padding:0 10px;font-size:13px;flex-shrink:0">›</span>
+            <input id="auth-email" type="email" placeholder="user@example.com"
+              style="flex:1;background:none;border:none;padding:11px 10px 11px 0;
+              color:#b8ffb8;font-family:'JetBrains Mono',monospace;font-size:13px;outline:none"
+              onfocus="document.getElementById('email-wrap').style.borderColor='#00ff41'"
+              onblur="document.getElementById('email-wrap').style.borderColor='#1a3a1a'"
+              onkeydown="if(event.key==='Enter')submitAuth()"/>
+          </div>
+        </div>
+
+        <!-- Password -->
+        <div style="margin-bottom:14px">
+          <div style="font-size:9px;color:#5a8a5a;font-family:'JetBrains Mono',monospace;
+            letter-spacing:1.5px;margin-bottom:6px">PASSWORD</div>
+          <div style="display:flex;align-items:center;background:#080c08;border:1px solid #1a3a1a;transition:border .2s" id="pass-wrap">
+            <span style="color:#00ff41;padding:0 10px;font-size:13px;flex-shrink:0">›</span>
+            <input id="auth-password" type="password" placeholder="••••••••"
+              style="flex:1;background:none;border:none;padding:11px 10px 11px 0;
+              color:#b8ffb8;font-family:'JetBrains Mono',monospace;font-size:13px;outline:none"
+              onfocus="document.getElementById('pass-wrap').style.borderColor='#00ff41'"
+              onblur="document.getElementById('pass-wrap').style.borderColor='#1a3a1a'"
+              onkeydown="if(event.key==='Enter')submitAuth()"/>
+          </div>
+        </div>
+
+        <!-- Confirm Password — create_account only -->
+        <div id="confirm-wrap" style="margin-bottom:14px;display:none">
+          <div style="font-size:9px;color:#5a8a5a;font-family:'JetBrains Mono',monospace;
+            letter-spacing:1.5px;margin-bottom:6px">CONFIRM PASSWORD</div>
+          <div style="display:flex;align-items:center;background:#080c08;border:1px solid #1a3a1a;transition:border .2s" id="confirm-border">
+            <span style="color:#00ff41;padding:0 10px;font-size:13px;flex-shrink:0">›</span>
+            <input id="auth-confirm" type="password" placeholder="••••••••"
+              style="flex:1;background:none;border:none;padding:11px 10px 11px 0;
+              color:#b8ffb8;font-family:'JetBrains Mono',monospace;font-size:13px;outline:none"
+              onfocus="document.getElementById('confirm-border').style.borderColor='#00ff41'"
+              onblur="document.getElementById('confirm-border').style.borderColor='#1a3a1a'"
+              onkeydown="if(event.key='Enter')submitAuth()"/>
+          </div>
+        </div>
+
+        <!-- Submit -->
+        <button onclick="submitAuth()" id="auth-btn"
+          style="width:100%;background:#00ff41;border:none;color:#080c08;
+          padding:13px;font-family:'JetBrains Mono',monospace;font-size:13px;
+          font-weight:700;cursor:pointer;margin-top:4px;margin-bottom:10px;
+          transition:all .2s;letter-spacing:.5px">
+          → sign in
+        </button>
+
+      </div>
+
+      <!-- ── GUEST PANEL ── -->
+      <div id="guest-panel" style="display:none;padding:10px 0 6px">
+        <div style="text-align:center;margin-bottom:22px">
+          <div style="font-size:28px;margin-bottom:10px">👤</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#b8ffb8;margin-bottom:6px">
+            Continue without an account
+          </div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#3a5a3a;line-height:1.8">
+            > scan apps &amp; view results<br/>
+            > no registration required<br/>
+            <span style="color:#2a4a2a">> history not saved</span>
+          </div>
+        </div>
+        <button onclick="enterGuest()"
+          style="width:100%;background:transparent;border:1px solid #ffaa00;color:#ffaa00;
+          padding:13px;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;
+          cursor:pointer;letter-spacing:.5px;transition:all .2s"
+          onmouseover="this.style.background='rgba(255,170,0,.1)'"
+          onmouseout="this.style.background='transparent'">
+          → continue as guest
+        </button>
+      </div>
+
+      <!-- Message -->
+      <div id="auth-msg" style="font-size:11px;font-family:'JetBrains Mono',monospace;
+        text-align:center;min-height:16px;color:#5a8a5a;margin-top:6px"></div>
+
+    </div><!-- end card -->
+
+    <!-- Footer -->
+    <div style="text-align:center;margin-top:18px;font-size:10px;
+      color:#2d4a2d;font-family:'JetBrains Mono',monospace;letter-spacing:1px">
+      APP_GUARDIAN v1.0 &nbsp;·&nbsp; AI-powered scam detection
+    </div>
+
+  </div>
+</div>
+
+<style>
+@keyframes flicker2{0%,94%,100%{opacity:1}95%{opacity:.75}96%{opacity:1}97.5%{opacity:.6}98%{opacity:1}}
+</style>
+
+<div id="main-app" style="display:none"><div class="grid-bg"></div>
 
 <!-- API Status indicator -->
 <div class="api-status" id="api-status">
@@ -287,10 +460,7 @@ nav{display:flex;justify-content:space-between;align-items:center;
     </div>
     <div class="nav-right">
       <a class="nav-link" href="#">home</a>
-      <button class="btn-login">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4M10 17l5-5-5-5M15 12H3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-        login
-      </button>
+      
     </div>
   </nav>
 
@@ -344,7 +514,7 @@ nav{display:flex;justify-content:space-between;align-items:center;
   <!-- Sample scans -->
   <div class="sec-hdr">
     <span class="sec-title">&gt; sample_scans/</span>
-    <span class="browse-all">browse all &rsaquo;</span>
+    
   </div>
   <div class="samples" id="samples-grid">
     <div class="sample-card" onclick="scanApp('com.google.android.calculator','Calculator','Google LLC','=','#1565c0')">
@@ -536,16 +706,17 @@ nav{display:flex;justify-content:space-between;align-items:center;
 // CONFIG  —  change this to your deployed server URL
 // ═══════════════════════════════════════════════════
 // Auto-detect API URL: relative in production, localhost in dev
+// Auto-detect: use relative /api path (works on localhost + Render)
 const API = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-  ? 'http://localhost:5000'
-  : '';  // Empty = relative URL (same domain on Render)
+  ? 'http://localhost:5000/api'
+  : '/api';
 
 // ── Check backend health on load ────────────────────
 async function checkBackend() {
   const el  = document.getElementById('api-status');
   const txt = document.getElementById('api-status-text');
   try {
-    const r = await fetch(`${API}/`, { signal: AbortSignal.timeout(3000) });
+    const r = await fetch(`${API}/status`, { signal: AbortSignal.timeout(3000) });
     if (r.ok) {
       el.className = 'api-status ok';
       txt.textContent = 'backend connected';
@@ -754,64 +925,453 @@ const appColor = dev => { let h=0; for(let c of dev||'') h=(Math.imul(31,h)+c.ch
 const gradeOf  = s  => s>=85?'Excellent':s>=70?'Good':s>=55?'Fair':s>=40?'Poor':'Dangerous';
 
 // ── Mock fallback (when backend is offline) ───────────
+// ── Per-app accurate mock database (matches real Play Store data) ─────────────
+const MOCK_DB = {
+  'com.whatsapp': {
+    title:'WhatsApp Messenger', developer:'WhatsApp LLC', genre:'Communication',
+    score:4.5, reviews:236000000, installs:'10,000,000,000+', minInstalls:10000000000,
+    version:'2.26.18.74', free:true, adSupported:false,
+    permissions:['android.permission.INTERNET','android.permission.CAMERA',
+      'android.permission.RECORD_AUDIO','android.permission.READ_CONTACTS',
+      'android.permission.ACCESS_FINE_LOCATION','android.permission.READ_EXTERNAL_STORAGE',
+      'android.permission.READ_PHONE_STATE'],
+    histogram:{1:11800000, 2:4720000, 3:11800000, 4:23600000, 5:184080000}
+  },
+  'com.whatsapp.w4b': {
+    title:'WhatsApp Business', developer:'WhatsApp LLC', genre:'Business',
+    score:4.3, reviews:22300000, installs:'500,000,000+', minInstalls:500000000,
+    version:'2.26.18.74', free:true, adSupported:false,
+    permissions:['android.permission.INTERNET','android.permission.CAMERA',
+      'android.permission.RECORD_AUDIO','android.permission.READ_CONTACTS',
+      'android.permission.ACCESS_FINE_LOCATION'],
+    histogram:{1:1230000, 2:450000, 3:1230000, 4:2900000, 5:16490000}
+  },
+  'com.instagram.android': {
+    title:'Instagram', developer:'Instagram', genre:'Social',
+    score:4.3, reviews:168000000, installs:'5,000,000,000+', minInstalls:5000000000,
+    version:'Varies with device', free:true, adSupported:true,
+    permissions:['android.permission.INTERNET','android.permission.CAMERA',
+      'android.permission.RECORD_AUDIO','android.permission.READ_CONTACTS',
+      'android.permission.ACCESS_FINE_LOCATION','android.permission.READ_EXTERNAL_STORAGE',
+      'android.permission.WRITE_EXTERNAL_STORAGE'],
+    histogram:{1:8400000, 2:3360000, 3:8400000, 4:25200000, 5:122640000}
+  },
+  'com.spotify.music': {
+    title:'Spotify: Music and Podcasts', developer:'Spotify AB', genre:'Music & Audio',
+    score:4.4, reviews:29400000, installs:'1,000,000,000+', minInstalls:1000000000,
+    version:'9.0.0.487', free:true, adSupported:true,
+    permissions:['android.permission.INTERNET','android.permission.RECORD_AUDIO',
+      'android.permission.READ_EXTERNAL_STORAGE','android.permission.WRITE_EXTERNAL_STORAGE',
+      'android.permission.BLUETOOTH','android.permission.WAKE_LOCK'],
+    histogram:{1:1470000, 2:588000, 3:1470000, 4:4410000, 5:21462000}
+  },
+  'com.google.android.calculator': {
+    title:'Calculator', developer:'Google LLC', genre:'Tools',
+    score:4.6, reviews:3200000, installs:'1,000,000,000+', minInstalls:1000000000,
+    version:'Varies with device', free:true, adSupported:false,
+    permissions:['android.permission.INTERNET'],
+    histogram:{1:96000, 2:64000, 3:192000, 4:480000, 5:2368000}
+  },
+  'com.google.android.apps.maps': {
+    title:'Google Maps', developer:'Google LLC', genre:'Maps & Navigation',
+    score:4.3, reviews:14600000, installs:'10,000,000,000+', minInstalls:10000000000,
+    version:'Varies with device', free:true, adSupported:false,
+    permissions:['android.permission.INTERNET','android.permission.ACCESS_FINE_LOCATION',
+      'android.permission.ACCESS_COARSE_LOCATION','android.permission.CAMERA',
+      'android.permission.READ_CONTACTS','android.permission.RECORD_AUDIO'],
+    histogram:{1:730000, 2:292000, 3:730000, 4:2190000, 5:10658000}
+  },
+  'com.netflix.mediaclient': {
+    title:'Netflix', developer:'Netflix, Inc.', genre:'Entertainment',
+    score:4.4, reviews:14300000, installs:'1,000,000,000+', minInstalls:1000000000,
+    version:'Varies with device', free:false, adSupported:false,
+    permissions:['android.permission.INTERNET','android.permission.READ_EXTERNAL_STORAGE',
+      'android.permission.CAMERA','android.permission.RECORD_AUDIO'],
+    histogram:{1:715000, 2:286000, 3:715000, 4:2145000, 5:10439000}
+  },
+  'com.snapchat.android': {
+    title:'Snapchat', developer:'Snap Inc.', genre:'Social',
+    score:4.1, reviews:13900000, installs:'1,000,000,000+', minInstalls:1000000000,
+    version:'Varies with device', free:true, adSupported:true,
+    permissions:['android.permission.INTERNET','android.permission.CAMERA',
+      'android.permission.RECORD_AUDIO','android.permission.ACCESS_FINE_LOCATION',
+      'android.permission.READ_CONTACTS','android.permission.READ_EXTERNAL_STORAGE'],
+    histogram:{1:1390000, 2:417000, 3:1112000, 4:2780000, 5:8201000}
+  },
+  'com.bfs.flashcleanerpro': {
+    title:'Flash Cleaner Pro · Super Boost', developer:'BrightCleanLabs', genre:'Tools',
+    score:3.8, reviews:48000, installs:'10,000,000+', minInstalls:10000000,
+    version:'3.1.2', free:true, adSupported:true,
+    permissions:['android.permission.INTERNET','android.permission.READ_EXTERNAL_STORAGE',
+      'android.permission.WRITE_EXTERNAL_STORAGE','android.permission.GET_ACCOUNTS',
+      'android.permission.RECEIVE_BOOT_COMPLETED','android.permission.WAKE_LOCK'],
+    histogram:{1:9600, 2:4800, 3:7200, 4:9600, 5:16800}
+  },
+  'com.adobe.reader': {
+    title:'Adobe Acrobat Reader', developer:'Adobe', genre:'Productivity',
+    score:4.6, reviews:2100000, installs:'500,000,000+', minInstalls:500000000,
+    version:'Varies with device', free:true, adSupported:false,
+    permissions:['android.permission.INTERNET','android.permission.READ_EXTERNAL_STORAGE',
+      'android.permission.WRITE_EXTERNAL_STORAGE','android.permission.CAMERA'],
+    histogram:{1:63000, 2:42000, 3:126000, 4:336000, 5:1533000}
+  },
+};
+
 function mockSearch(q) {
-  const db = [
-    {appId:'com.whatsapp',         title:'WhatsApp Messenger',              developer:'WhatsApp LLC',       genre:'Communication', score:4.1, icon:''},
-    {appId:'com.whatsapp.w4b',     title:'WhatsApp Business',               developer:'WhatsApp LLC',       genre:'Business',      score:4.0, icon:''},
-    {appId:'com.spotify.music',    title:'Spotify: Music and Podcasts',     developer:'Spotify AB',         genre:'Music',         score:4.4, icon:''},
-    {appId:'com.google.android.calculator', title:'Calculator',             developer:'Google LLC',         genre:'Tools',         score:4.5, icon:''},
-    {appId:'com.bfs.flashcleanerpro',       title:'Flash Cleaner Pro',      developer:'BrightCleanLabs',    genre:'Tools',         score:3.8, icon:''},
-    {appId:'com.instagram.android',         title:'Instagram',              developer:'Instagram',          genre:'Social',        score:4.1, icon:''},
-    {appId:'com.google.android.apps.maps',  title:'Google Maps',            developer:'Google LLC',         genre:'Maps',          score:4.3, icon:''},
-    {appId:'com.snapchat.android',          title:'Snapchat',               developer:'Snap Inc.',          genre:'Social',        score:4.0, icon:''},
-    {appId:'com.netflix.mediaclient',       title:'Netflix',                developer:'Netflix Inc.',       genre:'Entertainment', score:4.4, icon:''},
-    {appId:'com.adobe.reader',              title:'Adobe Acrobat Reader',   developer:'Adobe',              genre:'Productivity',  score:4.2, icon:''},
-  ];
   const ql = q.toLowerCase();
-  const hits = db.filter(a => a.title.toLowerCase().includes(ql) || a.developer.toLowerCase().includes(ql) || a.appId.includes(ql));
-  return hits.length ? hits : db.slice(0, 4);
+  const results = Object.entries(MOCK_DB)
+    .filter(([id, a]) =>
+      a.title.toLowerCase().includes(ql) ||
+      a.developer.toLowerCase().includes(ql) ||
+      id.includes(ql)
+    )
+    .map(([id, a]) => ({appId:id, title:a.title, developer:a.developer,
+                         genre:a.genre, score:a.score, icon:'', installs:a.installs}));
+  return results.length ? results : Object.entries(MOCK_DB).slice(0,4)
+    .map(([id,a]) => ({appId:id, title:a.title, developer:a.developer,
+                        genre:a.genre, score:a.score, icon:'', installs:a.installs}));
 }
 
 function mockScan(appId, title, developer) {
-  const trusted = /google|meta|whatsapp|spotify|instagram|netflix|amazon|microsoft/i.test(developer);
-  const cleaner = /cleaner|booster|optimizer|speed|ram|junk|master/i.test(title);
+  // Look up exact app data or build generic entry
+  const known = MOCK_DB[appId];
+  const d = known || {
+    title, developer,
+    genre:'Tools', score:3.5, reviews:5000, installs:'10,000+', minInstalls:10000,
+    version:'1.0.0', free:true, adSupported:true,
+    permissions:['android.permission.INTERNET','android.permission.READ_EXTERNAL_STORAGE'],
+    histogram:{1:500, 2:200, 3:500, 4:800, 5:3000}
+  };
 
-  const fake = cleaner ? 72 : trusted ? 57 : 42;
-  const perm = cleaner ? 65 : trusted ? 6  : 28;
-  const dev  = trusted ? 80 : cleaner ? 25 : 52;
-  const mal  = cleaner ? 22 : 0;
-  const sent = trusted ? 100: cleaner ? 58 : 75;
-  const saf  = Math.min(99, Math.max(0, Math.round(
-    (100-fake)*.25 + (100-perm)*.20 + dev*.25 + (100-mal)*.10 + sent*.20)));
+  // Compute analysis the same way the backend does
+  const hist     = d.histogram;
+  const total    = Object.values(hist).reduce((a,b)=>a+b, 0);
+  const five     = hist[5] || 0;
+  const one      = hist[1] || 0;
+  const fivePct  = five / total;
+  const onePct   = one  / total;
+
+  // Fake review risk
+  let fake = 10;
+  if (fivePct > 0.90) fake += 50;
+  else if (fivePct > 0.82) fake += 35;
+  else if (fivePct > 0.74) fake += 20;
+  else if (fivePct > 0.65) fake += 10;
+  if (d.minInstalls > 1000000 && onePct < 0.004) fake += 18;
+  fake = Math.min(fake, 100);
+
+  // Permission risk
+  const HIGH_PERMS = ['android.permission.READ_CONTACTS','android.permission.RECORD_AUDIO',
+    'android.permission.CAMERA','android.permission.ACCESS_FINE_LOCATION',
+    'android.permission.READ_SMS','android.permission.READ_PHONE_STATE',
+    'android.permission.READ_CALL_LOG','android.permission.USE_BIOMETRIC'];
+  const MED_PERMS  = ['android.permission.ACCESS_COARSE_LOCATION',
+    'android.permission.READ_EXTERNAL_STORAGE','android.permission.WRITE_EXTERNAL_STORAGE',
+    'android.permission.GET_ACCOUNTS','android.permission.RECEIVE_BOOT_COMPLETED',
+    'android.permission.BLUETOOTH','android.permission.BILLING',
+    'android.permission.REQUEST_INSTALL_PACKAGES'];
+  let perm = 0;
+  (d.permissions||[]).forEach(p => {
+    if (HIGH_PERMS.includes(p)) perm += 15;
+    else if (MED_PERMS.includes(p)) perm += 7;
+    else perm += 2;
+  });
+  perm = Math.min(perm, 100);
+
+  // Developer trust
+  const TRUSTED = ['google','meta','instagram','facebook','whatsapp','spotify',
+    'netflix','microsoft','amazon','samsung','adobe','snap','twitter','tiktok'];
+  const devLow  = (d.developer||'').toLowerCase();
+  let dev = 35;
+  if (d.minInstalls >= 1000000000) dev += 35;
+  else if (d.minInstalls >= 100000000) dev += 28;
+  else if (d.minInstalls >= 10000000)  dev += 20;
+  else if (d.minInstalls >= 1000000)   dev += 13;
+  if (d.reviews >= 100000000) dev += 15;
+  else if (d.reviews >= 10000000) dev += 12;
+  else if (d.reviews >= 1000000)  dev += 8;
+  if (d.score >= 4.5) dev += 12;
+  else if (d.score >= 4.2) dev += 8;
+  else if (d.score < 3.0)  dev -= 15;
+  if (TRUSTED.some(t => devLow.includes(t))) dev += 12;
+  dev = Math.min(Math.max(dev, 0), 100);
+
+  // Malware
+  let mal = 0;
+  const titleLow = (d.title||'').toLowerCase();
+  const cleanerApp = /cleaner|booster|optimizer|speed|ram|junk/.test(titleLow);
+  if (cleanerApp) mal += 20;
+  if (d.adSupported && d.minInstalls < 50000) mal += 15;
+  if (d.minInstalls < 5000) mal += 25;
+  mal = Math.min(mal, 100);
+
+  // Sentiment — directly from star rating
+  const sent = Math.round((d.score / 5) * 100);
+
+  // Safety score
+  const saf = Math.min(99, Math.max(0, Math.round(
+    (100-fake)*.25 + (100-perm)*.20 + dev*.25 + (100-mal)*.10 + sent*.20
+  )));
+
+  const rl = saf>=75?'LOW':saf>=50?'MEDIUM':'HIGH';
+
+  // Format review count
+  const rev = d.reviews;
+  const revStr = rev>=1000000000 ? (rev/1000000000).toFixed(1)+'B'
+               : rev>=1000000    ? (rev/1000000).toFixed(1)+'M'
+               : rev>=1000       ? Math.round(rev/1000)+'K'
+               : String(rev);
 
   return {
     app: {
-      appId, title, developer, icon:'', genre: trusted ? 'Communication' : 'Tools',
-      score: trusted ? 4.1 : cleaner ? 3.6 : 3.9,
-      ratings: trusted ? 6200000 : 50000,
-      reviews: trusted ? 22300000 : 30000,
-      installs: trusted ? '500,000,000+' : '5,000,000+',
-      minInstalls: trusted ? 500000000 : 5000000,
-      version: trusted ? '2.26.18.74' : '3.1.2',
-      free: true, adSupported: cleaner, containsAds: cleaner,
-      url: `https://play.google.com/store/apps/details?id=${appId}`,
-      permissions: trusted ? ['android.permission.INTERNET','android.permission.CAMERA','android.permission.RECORD_AUDIO']
-                           : ['android.permission.INTERNET','android.permission.READ_EXTERNAL_STORAGE','android.permission.ACCESS_FINE_LOCATION'],
+      appId, title:d.title, developer:d.developer, icon:'', genre:d.genre,
+      score:d.score, ratings:d.reviews, reviews:d.reviews,
+      installs:d.installs, minInstalls:d.minInstalls,
+      version:d.version, free:d.free, adSupported:d.adSupported, containsAds:d.adSupported,
+      url:`https://play.google.com/store/apps/details?id=${appId}`,
+      permissions:d.permissions,
     },
     analysis: {
-      safetyScore: saf, safetyGrade: gradeOf(saf),
-      riskLevel: saf>=75?'LOW':saf>=50?'MEDIUM':'HIGH',
-      safeToUse: saf >= 65,
-      betterThanPct: Math.min(99, saf + 8),
-      fakeReviewRisk: fake,  fakeReviewLabel:  fake>=60?'High':fake>=30?'Medium':'Low',
-      permissionsRisk: perm, permissionsLabel: perm>=60?'High':perm>=30?'Medium':'Low',
-      developerTrust:  dev,  developerLabel:   dev>=60?'High':dev>=30?'Medium':'Low',
-      malwareRisk: mal,      malwareLabel:     mal===0?'Safe':mal<30?'Low':'High',
-      sentimentScore: sent, reviewsAnalyzed: trusted?'22.3M':'30K',
-      lastAnalyzed: 'Just now', permissionDetails:[],
+      safetyScore:saf, safetyGrade:gradeOf(saf),
+      riskLevel:rl, safeToUse:saf>=65,
+      betterThanPct:Math.min(99, saf+8),
+      fakeReviewRisk:fake,  fakeReviewLabel:  fake>=60?'High':fake>=30?'Medium':'Low',
+      permissionsRisk:perm, permissionsLabel: perm>=60?'High':perm>=30?'Medium':'Low',
+      developerTrust:dev,   developerLabel:   dev>=70?'High':dev>=40?'Medium':'Low',
+      malwareRisk:mal,      malwareLabel:     mal===0?'Safe':mal<30?'Low':'High',
+      sentimentScore:sent,  reviewsAnalyzed:revStr,
+      lastAnalyzed:'Just now', permissionDetails:[],
     }
   };
 }
 </script>
-</body>
-</html>
+</div><!-- end main-app -->
+
+<script>
+// ═══════════════════════════════════════════════════════════
+//  APP GUARDIAN — Auth Engine (localStorage, no server needed)
+// ═══════════════════════════════════════════════════════════
+
+const USERS_KEY   = 'ag_users_v1';
+const SESSION_KEY = 'ag_session_v1';
+
+// ── Storage (dual-write: localStorage + sessionStorage) ───────────────────
+function _lsSet(k, v) {
+  try { localStorage.setItem(k, v); } catch {}
+  try { sessionStorage.setItem(k, v); } catch {}
+}
+function _lsGet(k) {
+  try { return localStorage.getItem(k) || sessionStorage.getItem(k); } catch {
+    try { return sessionStorage.getItem(k); } catch { return null; }
+  }
+}
+function _lsDel(k) {
+  try { localStorage.removeItem(k); } catch {}
+  try { sessionStorage.removeItem(k); } catch {}
+}
+function getUsers() {
+  try { return JSON.parse(_lsGet(USERS_KEY) || '{}'); } catch { return {}; }
+}
+function saveUsers(u) { _lsSet(USERS_KEY, JSON.stringify(u)); }
+function getSession() {
+  try { return JSON.parse(_lsGet(SESSION_KEY) || 'null'); } catch { return null; }
+}
+function saveSession(u) { _lsSet(SESSION_KEY, JSON.stringify(u)); }
+function clearSession() { _lsDel(SESSION_KEY); }
+
+// ── UI helpers ────────────────────────────────────────────────────────────
+function setMsg(text, color) {
+  const el = document.getElementById('auth-msg');
+  if (el) { el.textContent = text; el.style.color = color || '#5a8a5a'; }
+}
+function setBtn(text, disabled) {
+  const btn = document.getElementById('auth-btn');
+  if (!btn) return;
+  btn.textContent = text; btn.disabled = disabled;
+  btn.style.opacity = disabled ? '.6' : '1';
+}
+
+// ── Seed demo account ─────────────────────────────────────────────────────
+(function seedDemo() {
+  const u = getUsers();
+  u['demo@guardian.app'] = { password: 'demo1234', name: 'Demo' };
+  saveUsers(u);
+})();
+
+// ── Tab switching ─────────────────────────────────────────────────────────
+let currentTab = 'signin';
+
+function switchTab(tab) {
+  currentTab = tab;
+  const tabs = { signin: document.getElementById('tab-signin'), signup: document.getElementById('tab-signup'), guest: document.getElementById('tab-guest') };
+  const fields      = document.getElementById('auth-fields');
+  const guestPanel  = document.getElementById('guest-panel');
+  const confirmWrap = document.getElementById('confirm-wrap');
+  const nameWrap    = document.getElementById('name-wrap-outer');
+
+  // Reset all tabs
+  Object.values(tabs).forEach(t => {
+    if (!t) return;
+    t.style.borderBottomColor = 'transparent';
+    t.style.color = '#5a8a5a';
+  });
+
+  setMsg('');
+
+  if (tab === 'signin') {
+    tabs.signin.style.borderBottomColor = '#00ff41';
+    tabs.signin.style.color = '#00ff41';
+    if (fields) fields.style.display = '';
+    if (guestPanel) guestPanel.style.display = 'none';
+    if (confirmWrap) confirmWrap.style.display = 'none';
+    if (nameWrap) nameWrap.style.display = 'none';
+    setBtn('→ sign in', false);
+
+  } else if (tab === 'signup') {
+    tabs.signup.style.borderBottomColor = '#00ff41';
+    tabs.signup.style.color = '#00ff41';
+    if (fields) fields.style.display = '';
+    if (guestPanel) guestPanel.style.display = 'none';
+    if (confirmWrap) confirmWrap.style.display = '';
+    if (nameWrap) nameWrap.style.display = '';
+    setBtn('→ create account', false);
+
+  } else if (tab === 'guest') {
+    tabs.guest.style.borderBottomColor = '#ffaa00';
+    tabs.guest.style.color = '#ffaa00';
+    if (fields) fields.style.display = 'none';
+    if (guestPanel) guestPanel.style.display = '';
+    setMsg('');
+  }
+}
+
+// ── Guest login ───────────────────────────────────────────────────────────
+function enterGuest() {
+  setMsg('> entering as guest...', '#ffaa00');
+  const guestUser = { email: 'guest', name: 'Guest', isGuest: true };
+  saveSession(guestUser);  // save immediately so reload restores
+  setTimeout(function() {
+    enterApp(guestUser);
+  }, 400);
+}
+
+// ── Submit (sign in / create account) ────────────────────────────────────
+function submitAuth() {
+  const email   = (document.getElementById('auth-email').value || '').trim().toLowerCase();
+  const pass    = document.getElementById('auth-password').value || '';
+  const confirm = (document.getElementById('auth-confirm') || {}).value || '';
+  const nameVal = (document.getElementById('auth-name') || {}).value || '';
+
+  if (!email || !email.includes('@')) { setMsg('> enter a valid email', '#ff4d6d'); return; }
+  if (pass.length < 6) { setMsg('> password must be 6+ characters', '#ff4d6d'); return; }
+
+  const label = currentTab === 'signin' ? '→ sign in' : '→ create account';
+  setBtn('> authenticating...', true);
+  setMsg('> connecting...', '#5a8a5a');
+
+  setTimeout(() => {
+    const users = getUsers();
+
+    if (currentTab === 'signin') {
+      if (!users[email]) {
+        setMsg('> no account found — use create_account tab', '#ff4d6d');
+        // Flash signup tab
+        const t2 = document.getElementById('tab-signup');
+        if (t2) { t2.style.color='#ff4d6d'; setTimeout(()=>{ t2.style.color='#5a8a5a'; }, 1500); }
+        setBtn(label, false); return;
+      }
+      if (users[email].password !== pass) {
+        setMsg('> incorrect password', '#ff4d6d');
+        setBtn(label, false); return;
+      }
+      const user = { email, name: users[email].name || email.split('@')[0] };
+      saveSession(user);
+      setMsg('> access granted ✓', '#00ff41');
+      setTimeout(() => enterApp(user), 600);
+
+    } else {
+      // signup
+      if (pass !== confirm) { setMsg('> passwords do not match', '#ff4d6d'); setBtn(label, false); return; }
+      if (users[email]) { setMsg('> account exists — use sign_in tab', '#ff4d6d'); setBtn(label, false); return; }
+      const name = nameVal.trim() || email.split('@')[0];
+      users[email] = { password: pass, name };
+      saveUsers(users);
+      const user = { email, name };
+      saveSession(user);
+      setMsg('> account created ✓', '#00ff41');
+      setTimeout(() => enterApp(user), 600);
+    }
+  }, 500);
+}
+
+// ── Enter main app ────────────────────────────────────────────────────────
+function enterApp(user) {
+  // Save session FIRST so reload always works
+  saveSession(user);
+  const lp = document.getElementById('login-page');
+  const ma = document.getElementById('main-app');
+  lp.style.transition = 'opacity .45s';
+  lp.style.opacity = '0';
+  setTimeout(function() {
+    lp.style.display = 'none';
+    ma.style.display = 'block';
+    window.scrollTo(0, 0);
+    buildNavPill(user);
+    if (typeof checkBackend === 'function') checkBackend();
+  }, 450);
+}
+
+// ── Logout ────────────────────────────────────────────────────────────────
+function logoutUser() { clearSession(); location.reload(); }
+
+// ── Auto-login on page load ───────────────────────────────────────────────
+// ── Build nav user pill ───────────────────────────────────────────────────
+function buildNavPill(session) {
+  const navRight = document.querySelector('.nav-right');
+  if (!navRight) return;
+  // Remove old login btn or pill
+  Array.from(navRight.children).forEach(c => c.remove());
+  const pill = document.createElement('div');
+  pill.style.cssText = 'display:flex;align-items:center;gap:10px';
+  const icon       = session.isGuest ? '👤' : '⬡';
+  const label      = session.isGuest ? 'Guest' : (session.name || session.email.split('@')[0]);
+  const badgeColor = session.isGuest ? '#ffaa00' : '#009922';
+  pill.innerHTML = `
+    <span style="font-family:var(--font-mono);font-size:13px;color:${badgeColor}">${icon} ${label}</span>
+    <button onclick="logoutUser()"
+      style="border:1px solid rgba(255,59,59,.4);color:#ff4d6d;background:transparent;
+      padding:5px 12px;font-family:var(--font-mono);font-size:11px;cursor:pointer;transition:all .2s"
+      onmouseover="this.style.background='rgba(255,59,59,.1)'"
+      onmouseout="this.style.background='transparent'">logout</button>`;
+  navRight.appendChild(pill);
+}
+
+// ── Show main app immediately (no animation — used on reload) ─────────────
+function restoreApp(session) {
+  const lp = document.getElementById('login-page');
+  const ma = document.getElementById('main-app');
+  if (lp) lp.style.display = 'none';
+  if (ma) ma.style.display = 'block';
+  buildNavPill(session);
+  if (typeof checkBackend === 'function') checkBackend();
+}
+
+// ── Run on DOM ready ──────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function() {
+
+  // 1. Check for saved session → restore immediately
+  const session = getSession();
+  if (session && session.email) {
+    restoreApp(session);
+  }
+
+  // 2. Enter key on all auth inputs
+  ['auth-email','auth-password','auth-confirm','auth-name'].forEach(function(id) {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') submitAuth();
+    });
+  });
+});
+</script>
+</body></html>
